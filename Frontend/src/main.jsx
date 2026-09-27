@@ -5,6 +5,8 @@ import App from './App.jsx'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import ServerProvider from './Context/ServerProvider.jsx'
 import Home from './Components/Home.jsx'
+import AuthPage from './Components/Pages/AuthPage.jsx'
+import AddEquipmentPage from './Components/Pages/AddEquipmentPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -20,7 +22,12 @@ const router = createBrowserRouter([
         element: <Home/>
       },
       {
-
+        path: "/Login",
+        element: <AuthPage />
+      },
+      {
+        path: "/addEquipments",
+        element: <AddEquipmentPage/>
       }
     ]
   }
