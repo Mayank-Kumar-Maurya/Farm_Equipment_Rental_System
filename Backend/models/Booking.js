@@ -19,6 +19,10 @@ const bookingSchema = mongoose.Schema({
         type: String,
         required : true
     },
+    booking_status: {
+        type: Boolean,
+        default: false
+    }
 
 })
 

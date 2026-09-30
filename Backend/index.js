@@ -8,6 +8,9 @@ const cors = require('cors');
 
 const AllRoutes = require('./Routes/AllRoutes');
 const LoginRoute = require('./Routes/LoginRoute');
+const UserRoute = require('./Routes/UserRoute');
+const ComplainRoute = require('./Routes/ComplainRoute');
+const ReviewRoute = require('./Routes/ReviewRoute');
 
 const dburl = process.env.dburl || 'mongodb://127.0.0.1:27017/FERS';
 
@@ -26,8 +29,11 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors());
 
-app.use("/", AllRoutes)
-app.use("/auth", LoginRoute)
+app.use("/", AllRoutes);
+app.use("/auth", LoginRoute);
+app.use("/user", UserRoute);
+app.use("/:id/complains", ComplainRoute);
+app.use("/:id/reviews", ReviewRoute);
 
 app.listen(port, ()=>{
     console.log("Server connected to port:", port);
