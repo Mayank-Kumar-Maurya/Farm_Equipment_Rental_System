@@ -6,7 +6,7 @@ const Review = require("../models/Review.js");
 
 const isLoggedin = (req, res, next) => {
     try {
-        // console.log("ok token: ", req.headers['token'])
+        
         let token = req.headers['token'];
         jwt.verify(token, process.env.SECRET, (err, decode) => {
             if (err) {
@@ -30,67 +30,70 @@ const isLoggedin = (req, res, next) => {
 
 // id -> product id
 
-const isOwner = async(req, res, next) => {
-   try {
-    
-    let {id} = req.params;
-    let getOwner = await Product.findById(id);
-    console.log(getOwner.owner,"==", req.user.userId)
-    
-    if(!getOwner.owner.equals(req.user.userId))
-    {
-        return res.status(401).json({msg:"You are not authorized to make changes in this equipment"})
-    }
+const isOwner = async (req, res, next) => {
+    try {
 
-    next();
+        let { id } = req.params;
+        let getOwner = await Product.findById(id);
+        console.log(getOwner.owner, "==", req.user.userId)
 
-   } catch (error) {
-     console.log("error at owner middleware", error)
+        if (!getOwner.owner.equals(req.user.userId)) {
+            return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
+        }
+
+        next();
+
+    } catch (error) {
+        console.log("error at owner middleware", error)
         next(error)
-   }
+    }
 }
 
 // complain
 // id -> complain id
-const isComplainOwner = async(req, res, next) => {
-   try {
-    
-    let {id} = req.params;
-    let getOwner = await Complain.findById(id);
-    console.log(getOwner.author,"==", req.user.userId)
-    
-    if(!getOwner.author.equals(req.user.userId))
-    {
-        return res.status(401).json({msg:"You are not authorized to make changes in this equipment"})
-    }
+const isComplainOwner = async (req, res, next) => {
+    try {
 
-    next();
+        let { complainId } = req.params;
+        let getOwner = await Complain.findById(complainId);
+        if (!complainId || !getOwner) {
+            return res.status(400).json({ msg: "complain not found" })
+        }
+        console.log(getOwner.author, "==", req.user.userId)
 
-   } catch (error) {
-     console.log("error at owner middleware", error)
+        if (!getOwner.author.equals(req.user.userId)) {
+            return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
+        }
+
+        next();
+
+    } catch (error) {
+        console.log("error at Complainowner middleware", error)
         next(error)
-   }
+    }
 }
 
 
-const isReviewOwner = async(req, res, next) => {
-   try {
-    
-    let {id} = req.params;
-    let getOwner = await Review.findById(id);
-    console.log(getOwner.author,"==", req.user.userId)
-    
-    if(!getOwner.author.equals(req.user.userId))
-    {
-        return res.status(401).json({msg:"You are not authorized to make changes in this equipment"})
-    }
+const isReviewOwner = async (req, res, next) => {
+    try {
 
-    next();
+        let { reviewId } = req.params;
+        let getOwner = await Review.findById(reviewId);
+        if (!reviewId || !getOwner) {
+            return res.status(400).json({ msg: "review not found" })
+        }
+        console.log(getOwner.author, "==", req.user.userId)
 
-   } catch (error) {
-     console.log("error at owner middleware", error)
+        if (!getOwner.author.equals(req.user.userId)) {
+            return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
+        }
+
+        next();
+
+    } catch (error) {
+        console.log("error at Reviewowner middleware", error)
         next(error)
-   }
+    }
 }
 
 

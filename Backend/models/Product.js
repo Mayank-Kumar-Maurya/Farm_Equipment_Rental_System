@@ -55,11 +55,11 @@ const ProductSchema = mongoose.Schema({
         type: {
             type: String,
             enum: ['Point'],
-            required: true
+            // required: true
         },
         coordinates: {
             type: [Number],  // [longitude, latitude]
-            required: true
+            // required: true
         },
         address: String      // human readable address
     }

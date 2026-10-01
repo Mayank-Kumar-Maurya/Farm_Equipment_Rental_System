@@ -1,9 +1,11 @@
 const express = require('express');
 const { isLoggedin, isReviewOwner} = require('../middlewares/Authorization');
 const Review = require('../models/Review');
-const router = express.Router();
+const Product = require('../models/Product');
+const router = express.Router({ mergeParams: true });
 
 
+// id -> equipment id
 router.route("/")
 .post(isLoggedin, async(req, res)=>
 {
@@ -13,7 +15,7 @@ router.route("/")
         if (!id) {
             return res.status(400).json({ msg: "No equipment is selected" });
         }
-        if (!message) {
+        if (!comment) {
             return res.status(400).json({ msg: "All fields are required" });
         }
 

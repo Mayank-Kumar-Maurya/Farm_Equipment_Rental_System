@@ -30,13 +30,12 @@ router.route("/addEquipments")
         console.log("ans", req.user)
         res.send("addEquipment")
     })
-    .post(isLoggedin, upload.array('photos', 6), async (req, res) => {
+    .post(isLoggedin, upload.array('images', 6), async (req, res) => {
         try {
 
             let { name, brand, catergory, price, description, rating, lat, lng, address } = req.body;
             console.log("add equip", req.body);
             let img = req.files;
-            console.log("photos ", req.files, req.file)
             console.log("img -> ", img);
 
             let newEquipment = await new Product({
@@ -80,7 +79,7 @@ router.route("/showAllEquipments")
     });
 
 // show equip by id -> pass the equipment(Product) id
-router.route("showEquipment/:id")
+router.route("/showEquipment/:id")
     .get(async (req, res) => {
         try {
             let { id } = req.params;
@@ -108,7 +107,7 @@ router.route("showEquipment/:id")
     })
 
     // update
-    .put(isLoggedin, isOwner, upload.array('photos', 6), async (req, res) => {
+    .put(isLoggedin, isOwner, upload.array('images', 6), async (req, res) => {
         try {
             let { id } = req.params;
 
@@ -118,7 +117,7 @@ router.route("showEquipment/:id")
                 updateEquip.images = img.map(i => ({ url: i.path, filename: i.filename }));
                 await updateEquip.save();
             }
-            console.log('updated', updateEquip);
+            
             res.status(200).json({ msg: "equipment updated successfully" });
         } catch (error) {
             return res.status(500).json({ msg: `internal server error ${error}` });

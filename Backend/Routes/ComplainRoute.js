@@ -1,6 +1,8 @@
 const express = require('express');
 const { isLoggedin, isComplainOwner } = require('../middlewares/Authorization');
-const router = express.Router()
+const Complain = require('../models/Complain');
+const Product = require('../models/Product');
+const router = express.Router({ mergeParams: true })
 
 
 
@@ -11,6 +13,7 @@ router.route("/")
         try {
             let { id } = req.params;
             let { message } = req.body;
+           
             if (!id) {
                 return res.status(400).json({ msg: "No equipment is selected" });
             }
@@ -22,7 +25,7 @@ router.route("/")
                 author: req.user.userId,
                 message: message
             });
-
+            
             let updateEquipment = await Product.findById(id);
             updateEquipment.complains.push(newComplain);
 

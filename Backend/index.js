@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const cors = require('cors');
 
 const AllRoutes = require('./Routes/AllRoutes');
+const SearchProduct = require('./Routes/SearchProduct');
 const LoginRoute = require('./Routes/LoginRoute');
 const UserRoute = require('./Routes/UserRoute');
 const ComplainRoute = require('./Routes/ComplainRoute');
@@ -30,9 +31,10 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", AllRoutes);
+app.use("/search", SearchProduct);
 app.use("/auth", LoginRoute);
 app.use("/user", UserRoute);
-app.use("/:id/complains", ComplainRoute);
+app.use("/:id/complains", ComplainRoute);  // eg:- localhost:8080/12345/complains 
 app.use("/:id/reviews", ReviewRoute);
 
 app.listen(port, ()=>{
