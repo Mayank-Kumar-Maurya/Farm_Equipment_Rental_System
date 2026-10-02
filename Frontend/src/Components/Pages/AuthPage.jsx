@@ -1,319 +1,541 @@
-import React, { useState } from 'react'
+import React, { useContext, useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import ServerContext from "../../Context/ServerContext.js";
 
 const clr = {
-  primary: '#4a7c59',
-  dark: '#2d5a3d',
-  light: '#f0f5f1',
-  border: '#c8ddd0',
-  text: '#2d3a30',
-  muted: '#7a9485',
-}
+  primary: "#4a7c59",
+  dark: "#2d5a3d",
+  light: "#f0f5f1",
+  border: "#c8ddd0",
+  text: "#2d3a30",
+  muted: "#7a9485",
+};
 
 const s = {
   page: {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #e8f0ea 0%, #f5f9f6 60%, #ddeee3 100%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '40px 16px',
+    minHeight: "100vh",
+    background:
+      "linear-gradient(135deg, #e8f0ea 0%, #f5f9f6 60%, #ddeee3 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "40px 16px",
   },
+
   card: {
-    background: '#fff',
-    borderRadius: '20px',
-    boxShadow: '0 8px 40px rgba(74,124,89,0.13)',
-    overflow: 'hidden',
+    background: "#fff",
+    borderRadius: "20px",
+    boxShadow: "0 8px 40px rgba(74,124,89,0.13)",
+    overflow: "hidden",
   },
+
   topBar: {
     background: `linear-gradient(135deg, ${clr.dark} 0%, ${clr.primary} 100%)`,
-    padding: '24px 20px 18px',
-    textAlign: 'center',
+    padding: "24px 20px 18px",
+    textAlign: "center",
   },
+
   logo: {
-    color: '#fff',
-    fontSize: '1.5rem',
+    color: "#fff",
+    fontSize: "1.5rem",
     fontWeight: 800,
-    letterSpacing: '2px',
-    marginBottom: '4px',
+    letterSpacing: "2px",
+    marginBottom: "4px",
   },
+
   logoSub: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: '0.8rem',
-    letterSpacing: '1px',
+    color: "rgba(255,255,255,0.7)",
+    fontSize: "0.8rem",
+    letterSpacing: "1px",
   },
+
   tabs: {
-    display: 'flex',
+    display: "flex",
     borderBottom: `2px solid ${clr.border}`,
     background: clr.light,
   },
+
   tab: (active) => ({
     flex: 1,
-    padding: '13px',
-    border: 'none',
-    background: active ? '#fff' : 'transparent',
+    padding: "13px",
+    border: "none",
+    background: active ? "#fff" : "transparent",
     color: active ? clr.primary : clr.muted,
     fontWeight: active ? 700 : 500,
-    fontSize: '0.95rem',
-    cursor: 'pointer',
-    borderBottom: active ? `2px solid ${clr.primary}` : '2px solid transparent',
-    marginBottom: '-2px',
-    transition: 'all 0.2s',
-    fontFamily: 'cursive',
+    fontSize: "0.95rem",
+    cursor: "pointer",
+    borderBottom: active
+      ? `2px solid ${clr.primary}`
+      : "2px solid transparent",
+    marginBottom: "-2px",
+    transition: "all 0.2s",
+    fontFamily: "cursive",
   }),
+
   body: {
-    padding: '24px 20px 28px',
+    padding: "24px 20px 28px",
   },
+
   label: {
-    display: 'block',
-    fontSize: '0.82rem',
+    display: "block",
+    fontSize: "0.82rem",
     fontWeight: 600,
     color: clr.text,
-    marginBottom: '6px',
-    letterSpacing: '0.5px',
+    marginBottom: "6px",
+    letterSpacing: "0.5px",
   },
+
   input: {
-    width: '100%',
-    padding: '10px 14px',
+    width: "100%",
+    padding: "10px 14px",
     border: `1.5px solid ${clr.border}`,
-    borderRadius: '10px',
-    fontSize: '0.92rem',
-    outline: 'none',
+    borderRadius: "10px",
+    fontSize: "0.92rem",
+    outline: "none",
     color: clr.text,
     background: clr.light,
-    boxSizing: 'border-box',
-    transition: 'border 0.2s',
-    fontFamily: 'cursive',
+    boxSizing: "border-box",
+    transition: "border 0.2s",
+    fontFamily: "cursive",
   },
+
   group: {
-    marginBottom: '18px',
+    marginBottom: "18px",
   },
+
   submitBtn: {
-    width: '100%',
-    padding: '12px',
+    width: "100%",
+    padding: "12px",
     background: `linear-gradient(135deg, ${clr.dark} 0%, ${clr.primary} 100%)`,
-    color: '#fff',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '1rem',
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    fontSize: "1rem",
     fontWeight: 700,
-    cursor: 'pointer',
-    letterSpacing: '1px',
-    marginTop: '6px',
-    transition: 'opacity 0.2s',
-    fontFamily: 'cursive',
+    cursor: "pointer",
+    letterSpacing: "1px",
+    marginTop: "6px",
+    transition: "opacity 0.2s",
+    fontFamily: "cursive",
   },
+
   divider: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    margin: '20px 0',
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    margin: "20px 0",
     color: clr.muted,
-    fontSize: '0.8rem',
+    fontSize: "0.8rem",
   },
+
   dividerLine: {
     flex: 1,
-    height: '1px',
+    height: "1px",
     background: clr.border,
   },
+
   googleBtn: {
-    width: '100%',
-    padding: '10px',
-    background: '#fff',
+    width: "100%",
+    padding: "10px",
+    background: "#fff",
     color: clr.text,
     border: `1.5px solid ${clr.border}`,
-    borderRadius: '10px',
-    fontSize: '0.92rem',
+    borderRadius: "10px",
+    fontSize: "0.92rem",
     fontWeight: 600,
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    fontFamily: 'cursive',
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "8px",
+    fontFamily: "cursive",
   },
+
   switchText: {
-    textAlign: 'center',
-    fontSize: '0.85rem',
+    textAlign: "center",
+    fontSize: "0.85rem",
     color: clr.muted,
-    marginTop: '20px',
+    marginTop: "20px",
   },
+
   switchLink: {
     color: clr.primary,
     fontWeight: 700,
-    cursor: 'pointer',
-    textDecoration: 'underline',
+    cursor: "pointer",
+    textDecoration: "underline",
   },
-  forgotLink: {
-    fontSize: '0.8rem',
-    color: clr.primary,
-    textDecoration: 'none',
-    float: 'right',
-    marginTop: '-14px',
-    marginBottom: '14px',
-    display: 'block',
-    fontWeight: 600,
-  },
-  row: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '14px',
-  },
-  roleRow: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '18px',
-  },
-  roleBtn: (active) => ({
-    flex: 1,
-    padding: '9px',
-    border: `1.5px solid ${active ? clr.primary : clr.border}`,
-    borderRadius: '10px',
-    background: active ? clr.light : '#fff',
-    color: active ? clr.primary : clr.muted,
-    fontWeight: active ? 700 : 500,
-    cursor: 'pointer',
-    fontSize: '0.88rem',
-    transition: 'all 0.2s',
-    fontFamily: 'cursive',
-  }),
-}
+};
 
 function LoginForm({ onSwitch }) {
-  const [focused, setFocused] = useState(null)
+  const { login, loading } = useContext(ServerContext);
+
+  const [focused, setFocused] = useState(null);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const result = await login(formData);
+
+    if (result?.success) {
+      alert("Login successfully");
+      navigate("/");
+    } else {
+      alert(result?.message || "Email or password incorrect");
+    }
+  };
+
   return (
-    <div style={s.body}>
+    <form style={s.body} onSubmit={handleSubmit}>
+      {/* Email */}
       <div style={s.group}>
-        <label style={s.label}>Email Address</label>
+        <label style={s.label}>Email</label>
+
         <input
-          style={{ ...s.input, border: `1.5px solid ${focused === 'email' ? clr.primary : clr.border}` }}
-          type="email" placeholder="you@example.com"
-          onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
+          style={{
+            ...s.input,
+            border: `1.5px solid ${
+              focused === "email" ? clr.primary : clr.border
+            }`,
+          }}
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          value={formData.email}
+          onChange={handleChange}
+          onFocus={() => setFocused("email")}
+          onBlur={() => setFocused(null)}
+          required
         />
       </div>
+
+      {/* Password */}
       <div style={s.group}>
         <label style={s.label}>Password</label>
+
         <input
-          style={{ ...s.input, border: `1.5px solid ${focused === 'pass' ? clr.primary : clr.border}` }}
-          type="password" placeholder="Enter your password"
-          onFocus={() => setFocused('pass')} onBlur={() => setFocused(null)}
+          style={{
+            ...s.input,
+            border: `1.5px solid ${
+              focused === "password" ? clr.primary : clr.border
+            }`,
+          }}
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          value={formData.password}
+          onChange={handleChange}
+          onFocus={() => setFocused("password")}
+          onBlur={() => setFocused(null)}
+          required
         />
       </div>
-      <div style={{ textAlign: 'right', marginTop: '-10px', marginBottom: '16px' }}>
-        <a href="#" style={{ fontSize: '0.8rem', color: clr.primary, fontWeight: 600, textDecoration: 'none' }}>Forgot password?</a>
-      </div>
-      <button style={s.submitBtn}>Login</button>
-      <div style={s.divider}>
-        <span style={s.dividerLine} /> or <span style={s.dividerLine} />
-      </div>
-      <button style={s.googleBtn}>
-        <span style={{ fontSize: '1.1rem' }}>G</span> Continue with Google
+
+      {/* Login Button */}
+      <button type="submit" style={s.submitBtn} disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
+
+      {/* Register */}
       <p style={s.switchText}>
-        Don't have an account?{' '}
-        <span style={s.switchLink} onClick={onSwitch}>Register here</span>
+        Don't have an account?{" "}
+        <span style={s.switchLink} onClick={onSwitch}>
+          Register here
+        </span>
       </p>
-    </div>
-  )
+    </form>
+  );
 }
 
 function RegisterForm({ onSwitch }) {
-  const [focused, setFocused] = useState(null)
-  const [role, setRole] = useState('farmer')
+  const { register, loading } = useContext(ServerContext);
+
+  const [focused, setFocused] = useState(null);
+
+  const [formData, setFormData] = useState({
+    username: "",
+    name: "",
+    email: "",
+    phone_no: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    if (
+      formData.password.length < 8 ||
+      formData.password.length > 16
+    ) {
+      alert("Password must be between 8 and 16 characters");
+      return;
+    }
+
+    const registerData = {
+      username: formData.username,
+      name: formData.name,
+      email: formData.email,
+      phone_no: Number(formData.phone_no),
+      password: formData.password,
+    };
+
+    const result = await register(registerData);
+
+    if (result?.success) {
+      alert("Account created successfully");
+
+      // Redirect to Login after successful registration
+      navigate("/login");
+    } else {
+      alert(result?.message || "Registration failed");
+    }
+  };
 
   const inp = (key) => ({
     ...s.input,
-    border: `1.5px solid ${focused === key ? clr.primary : clr.border}`,
-  })
+    border: `1.5px solid ${
+      focused === key ? clr.primary : clr.border
+    }`,
+  });
 
   return (
-    <div style={s.body}>
-      {/* Role selector */}
-      <div style={s.roleRow}>
-        <button style={s.roleBtn(role === 'farmer')} onClick={() => setRole('farmer')}>🌾 Farmer</button>
-        <button style={s.roleBtn(role === 'owner')} onClick={() => setRole('owner')}>🚜 Equipment Owner</button>
+    <form style={s.body} onSubmit={handleSubmit}>
+      {/* Username */}
+      <div style={s.group}>
+        <label style={s.label}>Username</label>
+
+        <input
+          style={inp("username")}
+          type="text"
+          name="username"
+          placeholder="Enter username"
+          value={formData.username}
+          onChange={handleChange}
+          onFocus={() => setFocused("username")}
+          onBlur={() => setFocused(null)}
+          required
+        />
       </div>
 
-      <div style={s.row} className="auth-row">
-        <div style={s.group}>
-          <label style={s.label}>First Name</label>
-          <input style={inp('fname')} type="text" placeholder="John"
-            onFocus={() => setFocused('fname')} onBlur={() => setFocused(null)} />
-        </div>
-        <div style={s.group}>
-          <label style={s.label}>Last Name</label>
-          <input style={inp('lname')} type="text" placeholder="Doe"
-            onFocus={() => setFocused('lname')} onBlur={() => setFocused(null)} />
-        </div>
+      {/* Name */}
+      <div style={s.group}>
+        <label style={s.label}>Full Name</label>
+
+        <input
+          style={inp("name")}
+          type="text"
+          name="name"
+          placeholder="Enter your full name"
+          value={formData.name}
+          onChange={handleChange}
+          onFocus={() => setFocused("name")}
+          onBlur={() => setFocused(null)}
+          required
+        />
       </div>
 
+      {/* Email */}
       <div style={s.group}>
         <label style={s.label}>Email Address</label>
-        <input style={inp('email')} type="email" placeholder="you@example.com"
-          onFocus={() => setFocused('email')} onBlur={() => setFocused(null)} />
+
+        <input
+          style={inp("email")}
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          value={formData.email}
+          onChange={handleChange}
+          onFocus={() => setFocused("email")}
+          onBlur={() => setFocused(null)}
+          required
+        />
       </div>
 
+      {/* Phone */}
       <div style={s.group}>
         <label style={s.label}>Phone Number</label>
-        <input style={inp('phone')} type="tel" placeholder="+91 00000 00000"
-          onFocus={() => setFocused('phone')} onBlur={() => setFocused(null)} />
+
+        <input
+          style={inp("phone_no")}
+          type="tel"
+          name="phone_no"
+          placeholder="9876543210"
+          value={formData.phone_no}
+          onChange={handleChange}
+          onFocus={() => setFocused("phone_no")}
+          onBlur={() => setFocused(null)}
+          required
+        />
       </div>
 
-      <div style={s.row} className="auth-row">
-        <div style={s.group}>
-          <label style={s.label}>Password</label>
-          <input style={inp('pass')} type="password" placeholder="••••••••"
-            onFocus={() => setFocused('pass')} onBlur={() => setFocused(null)} />
-        </div>
-        <div style={s.group}>
-          <label style={s.label}>Confirm Password</label>
-          <input style={inp('cpass')} type="password" placeholder="••••••••"
-            onFocus={() => setFocused('cpass')} onBlur={() => setFocused(null)} />
-        </div>
+      {/* Password */}
+      <div style={s.group}>
+        <label style={s.label}>Password</label>
+
+        <input
+          style={inp("password")}
+          type="password"
+          name="password"
+          placeholder="8-16 characters"
+          value={formData.password}
+          onChange={handleChange}
+          onFocus={() => setFocused("password")}
+          onBlur={() => setFocused(null)}
+          minLength={8}
+          maxLength={16}
+          required
+        />
       </div>
 
-      <button style={s.submitBtn}>Create Account</button>
+      {/* Confirm Password */}
+      <div style={s.group}>
+        <label style={s.label}>Confirm Password</label>
+
+        <input
+          style={inp("confirmPassword")}
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm your password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          onFocus={() => setFocused("confirmPassword")}
+          onBlur={() => setFocused(null)}
+          minLength={8}
+          maxLength={16}
+          required
+        />
+      </div>
+
+      {/* Submit */}
+      <button
+        type="submit"
+        style={s.submitBtn}
+        disabled={loading}
+      >
+        {loading ? "Creating Account..." : "Create Account"}
+      </button>
+
+      {/* Login */}
       <p style={s.switchText}>
-        Already have an account?{' '}
-        <span style={s.switchLink} onClick={onSwitch}>Login here</span>
+        Already have an account?{" "}
+        <span style={s.switchLink} onClick={onSwitch}>
+          Login here
+        </span>
       </p>
-    </div>
-  )
+    </form>
+  );
 }
 
 function AuthPage() {
-  const [tab, setTab] = useState('login')
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [tab, setTab] = useState(
+    location.pathname.toLowerCase() === "/register"
+      ? "register"
+      : "login"
+  );
+
+  // Update the form whenever the URL changes
+  useEffect(() => {
+    setTab(
+      location.pathname.toLowerCase() === "/register"
+        ? "register"
+        : "login"
+    );
+  }, [location.pathname]);
+
+  const handleTabChange = (selectedTab) => {
+    setTab(selectedTab);
+
+    navigate(selectedTab === "register" ? "/register" : "/login");
+  };
 
   return (
     <div style={s.page}>
       <style>{`
-        .auth-card { width: 100%; max-width: 440px; }
-        .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .auth-card {
+          width: 100%;
+          max-width: 440px;
+        }
+
         @media (max-width: 480px) {
-          .auth-row { grid-template-columns: 1fr !important; }
-          .auth-card { border-radius: 14px; }
+          .auth-card {
+            border-radius: 14px;
+          }
         }
       `}</style>
+
       <div style={s.card} className="auth-card">
-        {/* Top bar */}
+        {/* Top Bar */}
         <div style={s.topBar}>
           <div style={s.logo}>🌾 FERS</div>
-          <div style={s.logoSub}>FARM EQUIPMENT RENTAL SYSTEM</div>
+
+          <div style={s.logoSub}>
+            FARM EQUIPMENT RENTAL SYSTEM
+          </div>
         </div>
 
         {/* Tabs */}
         <div style={s.tabs}>
-          <button style={s.tab(tab === 'login')} onClick={() => setTab('login')}>Login</button>
-          <button style={s.tab(tab === 'register')} onClick={() => setTab('register')}>Register</button>
+          <button
+            type="button"
+            style={s.tab(tab === "login")}
+            onClick={() => handleTabChange("login")}
+          >
+            Login
+          </button>
+
+          <button
+            type="button"
+            style={s.tab(tab === "register")}
+            onClick={() => handleTabChange("register")}
+          >
+            Register
+          </button>
         </div>
 
         {/* Form */}
-        {tab === 'login'
-          ? <LoginForm onSwitch={() => setTab('register')} />
-          : <RegisterForm onSwitch={() => setTab('login')} />
-        }
+        {tab === "login" ? (
+          <LoginForm
+            onSwitch={() => handleTabChange("register")}
+          />
+        ) : (
+          <RegisterForm
+            onSwitch={() => handleTabChange("login")}
+          />
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default AuthPage
+export default AuthPage;
