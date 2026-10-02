@@ -14,17 +14,6 @@ router.route('/')
         res.send("hi there!");
     })
 
-// router.route("/myBookings")
-//     .get(isLoggedin, async (req, res) => {
-//         try {
-//             let allBookings = await Booking.find({ user_id: req.user.userId }).populate('equipment_id');
-//             console.log(allBookings);
-//             res.status(200).json({ msg: "success", bookings: allBookings });
-//         } catch (error) {
-//             return res.status(500).json({ msg: `internal server error ${error}` });
-//         }
-//     });
-
 router.route("/addEquipments")
     .get(isLoggedin, (req, res) => {
         console.log("ans", req.user)
@@ -113,10 +102,13 @@ router.route("/showEquipment/:id")
 
             let updateEquip = await Product.findByIdAndUpdate(id, { ...req.body });
             let img = req.files;
-            if (typeof img !== "undefined") {
+           
+            if (img.length != 0) {
                 updateEquip.images = img.map(i => ({ url: i.path, filename: i.filename }));
                 await updateEquip.save();
             }
+
+            
             
             res.status(200).json({ msg: "equipment updated successfully" });
         } catch (error) {
@@ -152,69 +144,28 @@ router.route("/showMyEquipments")
         }
     })
 
-router.route("/nearbyEquipments", async (req, res) => {
-    try {
-        const { lat, lng, radius = 20 } = req.query;
+// router.route("/nearbyEquipments", async (req, res) => {
+//     try {
+//         const { lat, lng, radius = 20 } = req.query;
 
-        let findNearbyEquipments = await Product.find({
-            location: {
-                $nearSphere: {
-                    $geometry: {
-                        type: 'Point',
-                        coordinates: [parseFloat(lng), parseFloat(lat)]
-                    },
-                    $maxDistance: radius * 10000
-                }
-            }
-        });
-        console.log("nearbyEquip", findNearbyEquipments);
-        res.status(200).json({ msg: "success", Equipments: findNearbyEquipments });
+//         let findNearbyEquipments = await Product.find({
+//             location: {
+//                 $nearSphere: {
+//                     $geometry: {
+//                         type: 'Point',
+//                         coordinates: [parseFloat(lng), parseFloat(lat)]
+//                     },
+//                     $maxDistance: radius * 10000
+//                 }
+//             }
+//         });
+//         console.log("nearbyEquip", findNearbyEquipments);
+//         res.status(200).json({ msg: "success", Equipments: findNearbyEquipments });
 
-    } catch (error) {
-        return res.status(500).json({ msg: `internal server error ${error}` });
-    }
-})
-
-
-
-let check_availability = (curr_date, booked_dates) => {
-    for (let i in booked_dates) {
-        const booked = new Date(booked_dates[i]).toISOString().split('T')[0];
-        console.log(curr_date, '==', booked)
-        if (curr_date === booked) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-router.route("/bookEquipment")
-    .post(isLoggedin, async (req, res) => {
-        try {
-
-            let { equipment_id, date, duration, location } = req.body;
-            let findEquipment = await Product.findById(equipment_id);
-            if (check_availability(date, findEquipment.booked_dates) === false) {
-                return res.status(400).json({ msg: "equipment not available on this date" })
-            }
-
-            let newBooking = await new Booking({
-                equipment_id: equipment_id,
-                date: date,
-                duration: duration,
-                location: location
-            })
-
-            let updateDate = await Product.findByIdAndUpdate(equipment_id, { $push: { booked_dates: date } })
-            console.log(updateDate)
-            await newBooking.save();
-            res.status(200).json({ msg: "equipment booked successfully" });
-
-        } catch (error) {
-            return res.status(500).json({ msg: `internal server error ${error}` });
-        }
-    });
+//     } catch (error) {
+//         return res.status(500).json({ msg: `internal server error ${error}` });
+//     }
+// })
 
 
 module.exports = router

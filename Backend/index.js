@@ -13,6 +13,7 @@ const UserRoute = require('./Routes/UserRoute');
 const AboutRoute = require('./Routes/AboutRoute');
 const ComplainRoute = require('./Routes/ComplainRoute');
 const ReviewRoute = require('./Routes/ReviewRoute');
+const BookingRoute = require('./Routes/BookingRoute');
 
 const dburl = process.env.dburl || 'mongodb://127.0.0.1:27017/FERS';
 
@@ -32,11 +33,12 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/", AllRoutes);
+app.use("/", BookingRoute);
 app.use("/search", SearchProduct);
 app.use("/auth", LoginRoute);
 app.use("/user", UserRoute);
 app.use("/about", AboutRoute);
-app.use("/:id/complains", ComplainRoute);  // eg:- localhost:8080/12345/complains 
+app.use("/:id/complains", ComplainRoute);  // id-> equipment_id eg:- localhost:8080/12345/complains 
 app.use("/:id/reviews", ReviewRoute);
 
 

@@ -39,6 +39,10 @@ const ProductSchema = mongoose.Schema({
     booked_dates: [{
         type: Date
     }],
+    bookings: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Booking'
+    }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: "Review"
@@ -62,7 +66,9 @@ const ProductSchema = mongoose.Schema({
             // required: true
         },
         address: String      // human readable address
-    }
+    },
+
+
 })
 
 ProductSchema.index({ location: '2dsphere' })

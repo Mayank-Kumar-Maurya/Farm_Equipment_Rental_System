@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const Product = require("../models/Product.js");
 const Complain = require("../models/Complain.js");
 const Review = require("../models/Review.js");
+const Booking = require("../models/Booking.js");
 
 
 const isLoggedin = (req, res, next) => {
@@ -62,13 +63,13 @@ const isComplainOwner = async (req, res, next) => {
         console.log(getOwner.author, "==", req.user.userId)
 
         if (!getOwner.author.equals(req.user.userId)) {
-            return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
+            return res.status(401).json({ msg: "You are not authorized to make changes " })
         }
 
         next();
 
     } catch (error) {
-        console.log("error at Complainowner middleware", error)
+        console.log("error at Complain owner middleware", error)
         next(error)
     }
 }
@@ -85,17 +86,40 @@ const isReviewOwner = async (req, res, next) => {
         console.log(getOwner.author, "==", req.user.userId)
 
         if (!getOwner.author.equals(req.user.userId)) {
-            return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
+            return res.status(401).json({ msg: "You are not authorized to make changes" })
         }
 
         next();
 
     } catch (error) {
-        console.log("error at Reviewowner middleware", error)
+        console.log("error at Review owner middleware", error)
+        next(error)
+    }
+}
+
+
+const isBookingOwner = async (req, res, next) => {
+    try {
+
+        let { bookingId } = req.params;
+        let getOwner = await Booking.findById(bookingId);
+        if (!bookingId || !getOwner) {
+            return res.status(400).json({ msg: "booking not found" })
+        }
+        console.log(getOwner.who_booked, "==", req.user.userId)
+
+        if (!getOwner.who_booked.equals(req.user.userId)) {
+            return res.status(401).json({ msg: "You are not authorized to make changes" })
+        }
+
+        next();
+
+    } catch (error) {
+        console.log("error at Booking owner middleware", error)
         next(error)
     }
 }
 
 
 
-module.exports = { isLoggedin, isOwner, isComplainOwner, isReviewOwner }
+module.exports = { isLoggedin, isOwner, isComplainOwner, isReviewOwner, isBookingOwner }

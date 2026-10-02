@@ -2,26 +2,25 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose;
 
 const bookingSchema = mongoose.Schema({
-    equipment_id:{
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-        required : true
-    },
     date: {
         type: Date,
         required : true
     },
-    duration: {
-        type: Number,
-        required : true
-    },
+    // duration: {
+    //     type: Number,
+    //     required : true
+    // },
     location: {
         type: String,
-        required : true
+        // required : true
+    },
+    who_booked:{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     },
     booking_status: {
-        type: Boolean,
-        default: false
+        type: Number,
+        default: -1  // -1 -> not approved, 0-> approved, 1->payment done
     }
 
 })
