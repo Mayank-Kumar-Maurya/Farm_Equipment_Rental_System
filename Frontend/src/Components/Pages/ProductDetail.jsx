@@ -509,14 +509,14 @@ const ProductDetail = () => {
 
         {/* Customer Reviews */}
         <div className="card border-0 shadow-sm rounded-4 mt-4">
-          <div className="card-body p-4">
-            {/* Heading and Give Review Button */}
+          <div className="card-body p-3 p-md-4">
+            {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h4 className="fw-bold mb-0">Customer Reviews</h4>
 
               <button
                 type="button"
-                className="btn btn-dark px-4"
+                className="btn btn-dark px-4 rounded-pill"
                 onClick={() => setShowReviewForm(!showReviewForm)}
               >
                 {showReviewForm ? "Close" : "Give Review"}
@@ -525,109 +525,152 @@ const ProductDetail = () => {
 
             {/* Review Form */}
             {showReviewForm && (
-              <div className="card border rounded-3 mb-4">
-                <div className="card-body p-4">
-                  <h5 className="fw-semibold mb-3">Write Your Review</h5>
+              <div className="bg-light rounded-4 p-3 p-md-4 mb-4">
+                <h5 className="fw-semibold mb-3">Write Your Review</h5>
 
-                  <form onSubmit={handleSubmitReview}>
-                    {/* Rating */}
-                    <div className="mb-3">
-                      <label className="form-label fw-semibold">Rating</label>
+                <form onSubmit={handleSubmitReview}>
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">Rating</label>
 
-                      <select
-                        className="form-select"
-                        value={reviewRating}
-                        onChange={(e) => setReviewRating(e.target.value)}
-                        required
-                      >
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="3">3 - Good</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="1">1 - Poor</option>
-                      </select>
-                    </div>
-
-                    {/* Comment */}
-                    <div className="mb-3">
-                      <label className="form-label fw-semibold">
-                        Your Comment
-                      </label>
-
-                      <textarea
-                        className="form-control"
-                        rows="4"
-                        placeholder="Share your experience with this equipment..."
-                        value={reviewComment}
-                        onChange={(e) => setReviewComment(e.target.value)}
-                        required
-                      />
-                    </div>
-
-                    {/* Submit Button */}
-                    <button
-                      type="submit"
-                      className="btn btn-dark px-4"
-                      disabled={reviewLoading}
+                    <select
+                      className="form-select rounded-3"
+                      value={reviewRating}
+                      onChange={(e) => setReviewRating(e.target.value)}
+                      required
                     >
-                      {reviewLoading ? "Submitting..." : "Submit Review"}
-                    </button>
-                  </form>
-                </div>
+                      <option value="5">5 - Excellent</option>
+                      <option value="4">4 - Very Good</option>
+                      <option value="3">3 - Good</option>
+                      <option value="2">2 - Fair</option>
+                      <option value="1">1 - Poor</option>
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-semibold">
+                      Your Comment
+                    </label>
+
+                    <textarea
+                      className="form-control rounded-3"
+                      rows="3"
+                      placeholder="Share your experience..."
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn btn-dark px-4 rounded-pill"
+                    disabled={reviewLoading}
+                  >
+                    {reviewLoading ? "Submitting..." : "Post Review"}
+                  </button>
+                </form>
               </div>
             )}
 
             {/* Reviews List */}
             {equipment.reviews && equipment.reviews.length > 0 ? (
-              <div className="d-flex flex-column gap-3">
+              <div className="d-flex flex-column gap-4">
                 {equipment.reviews.map((review) => {
-                  // Current logged-in user ID
                   const currentUserId = user?._id || user?.userId || user?.id;
 
-                  // Review author's ID
                   const reviewOwnerId =
                     review.author?._id ||
                     review.author?.userId ||
                     review.author;
 
-                  // Check whether current user owns this review
                   const isReviewOwner =
                     currentUserId &&
                     reviewOwnerId &&
                     String(currentUserId) === String(reviewOwnerId);
 
+                  const reviewerName =
+                    review.author?.name ||
+                    review.author?.username ||
+                    "Anonymous";
+
                   return (
-                    <div key={review._id} className="border rounded-3 p-3">
-                      <div className="d-flex justify-content-between align-items-start">
-                        {/* Reviewer Details */}
-                        <div>
-                          <h6 className="fw-bold mb-1">
-                            {review.author?.name ||
-                              review.author?.username ||
-                              "Anonymous"}
-                          </h6>
+                    <div
+                      key={review._id}
+                      className="d-flex gap-3 align-items-start pb-3 border-bottom"
+                    >
+                      {/* Profile Avatar */}
+                      <div
+                        className="rounded-circle bg-dark text-white d-flex justify-content-center align-items-center flex-shrink-0"
+                        style={{
+                          width: "45px",
+                          height: "45px",
+                          fontSize: "19px",
+                          fontWeight: "600",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {reviewerName.charAt(0)}
+                      </div>
 
-                          <div className="text-warning mb-2">
-                            {"★".repeat(review.rating)}
-                            <span className="text-secondary">
-                              {"☆".repeat(5 - review.rating)}
-                            </span>
-                          </div>
-                        </div>
+                      {/* Review Content */}
+                      <div className="flex-grow-1">
+                        {/* Reviewer Name and Date */}
+                        <div className="d-flex flex-wrap align-items-center gap-2 mb-1">
+                          <span className="fw-semibold text-dark">
+                            {reviewerName}
+                          </span>
 
-                        {/* Date and Delete Button */}
-                        <div className="text-end">
-                          <small className="text-muted d-block mb-2">
+                          <small className="text-muted">
                             {review.createdAt
                               ? new Date(review.createdAt).toLocaleDateString()
                               : ""}
                           </small>
+                        </div>
 
-                          {/* Delete button only for review owner */}
+                        {/* Star Rating */}
+                        <div
+                          className="text-warning mb-2"
+                          style={{
+                            fontSize: "15px",
+                            letterSpacing: "2px",
+                          }}
+                        >
+                          {"★".repeat(
+                            Math.min(
+                              5,
+                              Math.max(0, Number(review.rating) || 0),
+                            ),
+                          )}
+
+                          <span className="text-secondary">
+                            {"☆".repeat(
+                              5 -
+                                Math.min(
+                                  5,
+                                  Math.max(0, Number(review.rating) || 0),
+                                ),
+                            )}
+                          </span>
+                        </div>
+
+                        {/* Comment */}
+                        <p
+                          className="text-secondary mb-2"
+                          style={{
+                            fontSize: "15px",
+                            lineHeight: "1.6",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          {review.comment}
+                        </p>
+
+                        {/* Actions */}
+                        <div className="d-flex align-items-center gap-3">
                           {isReviewOwner && (
                             <button
                               type="button"
-                              className="btn btn-outline-danger btn-sm"
+                              className="btn btn-sm btn-outline-danger rounded-pill px-3"
                               onClick={() => handleDeleteReview(review._id)}
                               disabled={deletingReviewId === review._id}
                             >
@@ -638,20 +681,22 @@ const ProductDetail = () => {
                           )}
                         </div>
                       </div>
-
-                      {/* Review Comment */}
-                      <p className="text-secondary mb-0">{review.comment}</p>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-muted text-center py-4 mb-0">
-                No reviews yet. Be the first to review this equipment!
-              </p>
+              <div className="text-center py-5">
+                <div style={{ fontSize: "40px" }}>💬</div>
+                <h6 className="fw-semibold mt-2">No reviews yet</h6>
+                <p className="text-muted mb-0">
+                  Be the first to share your experience!
+                </p>
+              </div>
             )}
           </div>
         </div>
+
         {/* Complaints Section */}
         <div className="card border-0 shadow-sm rounded-4 mt-4">
           <div className="card-body p-4">
