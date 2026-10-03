@@ -6,7 +6,7 @@ import HomePage from './Pages/HomePage'
 
 function Home() {
 
-    const {count, setCount} = useContext(ServerContext)
+    const {user, token} = useContext(ServerContext)
   return (
     // <>
     //   <Slider/>
