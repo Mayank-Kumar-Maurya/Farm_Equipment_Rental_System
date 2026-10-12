@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import ServerContext from "../../Context/ServerContext.js";
+import { showFlashMessage } from "./FlashMessage.jsx";
 
 function Logout() {
   const { logout } = useContext(ServerContext);
@@ -8,6 +9,8 @@ function Logout() {
 
   const handleLogout = () => {
     logout();
+    showFlashMessage("success", "Logged out successfully!");
+
     navigate("/");
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
+import { showFlashMessage } from "./FlashMessage";
 
 const clr = {
   primary: "#4a7c59",
@@ -242,8 +243,6 @@ function AddEquipmentPage() {
     price: "",
     description: "",
     address: "",
-    lat: "",
-    lng: "",
   });
 
   const [photos, setPhotos] = useState([]);
@@ -251,6 +250,7 @@ function AddEquipmentPage() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const { token } = useContext(ServerContext);
   const navigate = useNavigate();
@@ -266,6 +266,7 @@ function AddEquipmentPage() {
       ...prev,
       [name]: value,
     }));
+     setFormError("");
   };
 
   // FILE HANDLING
@@ -273,7 +274,7 @@ function AddEquipmentPage() {
     const selectedFiles = Array.from(files);
 
     if (photos.length + selectedFiles.length > 6) {
-      alert("You can upload maximum 6 photos.");
+      setFormError("You can upload a maximum of 6 photos.");
       return;
     }
 
@@ -282,7 +283,7 @@ function AddEquipmentPage() {
     );
 
     if (validFiles.length !== selectedFiles.length) {
-      alert("Please select only image files.");
+      setFormError("Please select only image files.");
     }
 
     const newPhotos = validFiles.map((file) => ({
@@ -313,144 +314,133 @@ function AddEquipmentPage() {
   };
 
   // FORM SUBMISSION
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setFormError("");
 
-    if (!token) {
-      alert("Please login first.");
-      navigate("/login");
-      return;
-    }
+  // Login validation
+  if (!token) {
+    showFlashMessage("error", "Please login first.");
+    navigate("/login");
+    return;
+  }
 
-    if (!formData.name.trim()) {
-      alert("Please enter equipment name.");
-      return;
-    }
+  // Equipment name
+  if (!formData.name.trim()) {
+    setFormError("Please enter equipment name.");
+    return;
+  }
 
-    if (!formData.brand.trim()) {
-      alert("Please enter brand.");
-      return;
-    }
+  // Brand
+  if (!formData.brand.trim()) {
+    setFormError("Please enter brand.");
+    return;
+  }
 
-    if (!formData.catergory) {
-      alert("Please select category.");
-      return;
-    }
+  // Category
+  if (!formData.catergory) {
+    setFormError("Please select category.");
+    return;
+  }
 
-    if (!formData.price || Number(formData.price) <= 0) {
-      alert("Please enter a valid rental price.");
-      return;
-    }
+  // Price
+  if (!formData.price || Number(formData.price) <= 0) {
+    setFormError("Please enter a valid rental price.");
+    return;
+  }
 
-    if (!formData.description.trim()) {
-      alert("Please enter description.");
-      return;
-    }
+  // Description
+  if (!formData.description.trim()) {
+    setFormError("Please enter description.");
+    return;
+  }
 
-    if (rating < 1 || rating > 5) {
-      alert("Please select a rating.");
-      return;
-    }
+  // Rating
+  if (rating < 1 || rating > 5) {
+    setFormError("Please select a rating.");
+    return;
+  }
 
-    if (!formData.address.trim()) {
-      alert("Please enter equipment address.");
-      return;
-    }
+  // Address
+  if (!formData.address.trim()) {
+    setFormError("Please enter equipment address.");
+    return;
+  }
 
-    const lat = Number(formData.lat);
-    const lng = Number(formData.lng);
+  // Photos
+  if (photos.length === 0) {
+    setFormError("Please upload at least one photo.");
+    return;
+  }
 
-    if (
-      formData.lat === "" ||
-      formData.lng === "" ||
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng) ||
-      lat < -90 ||
-      lat > 90 ||
-      lng < -180 ||
-      lng > 180
-    ) {
-      alert("Please enter valid latitude and longitude.");
-      return;
-    }
+  try {
+    setLoading(true);
 
-    if (photos.length === 0) {
-      alert("Please upload at least one photo.");
-      return;
-    }
+    const data = new FormData();
 
-    try {
-      setLoading(true);
+    data.append("name", formData.name);
+    data.append("brand", formData.brand);
+    data.append("catergory", formData.catergory);
+    data.append("price", Number(formData.price));
+    data.append("description", formData.description);
+    data.append("rating", rating);
 
-      const data = new FormData();
+    data.append("address", formData.address);
 
-      // Basic equipment information
-      data.append("name", formData.name);
-      data.append("brand", formData.brand);
-      data.append("catergory", formData.catergory);
-      data.append("price", Number(formData.price));
-      data.append("description", formData.description);
-      data.append("rating", rating);
+    photos.forEach((photo) => {
+      data.append("images", photo.file);
+    });
 
-      // Location information
-      data.append("address", formData.address);
-      data.append("lat", lat);
-      data.append("lng", lng);
-
-      // Backend expects upload.array("images", 6)
-      photos.forEach((photo) => {
-        data.append("images", photo.file);
-      });
-
-      const response = await axios.post(
-        "http://localhost:8080/addEquipments",
-        data,
-        {
-          headers: {
-            token: token,
-          },
+    const response = await axios.post(
+      "http://localhost:8080/addEquipments",
+      data,
+      {
+        headers: {
+          token: token,
         },
-      );
+      },
+    );
 
-      console.log("Equipment response:", response.data);
+    console.log("Equipment response:", response.data);
 
-      alert("Equipment added successfully!");
+    // Release preview URLs
+    photos.forEach((photo) => {
+      URL.revokeObjectURL(photo.url);
+    });
 
-      // Reset form
-      setFormData({
-        name: "",
-        brand: "",
-        catergory: "",
-        price: "",
-        description: "",
-        address: "",
-        lat: "",
-        lng: "",
-      });
+    // Reset form
+    setFormData({
+      name: "",
+      brand: "",
+      catergory: "",
+      price: "",
+      description: "",
+      address: "",
+    });
 
-      // Release preview URLs
-      photos.forEach((photo) => {
-        URL.revokeObjectURL(photo.url);
-      });
+    setPhotos([]);
+    setRating(0);
+    setHoverRating(0);
+    setFormError("");
 
-      setPhotos([]);
-      setRating(0);
-      setHoverRating(0);
+    // Success flash message
+    showFlashMessage("success", "Equipment added successfully!");
 
-      navigate("/");
-    } catch (error) {
-      console.error("Add equipment error:", error);
-      console.log("Backend response:", error.response?.data);
+    navigate("/");
+  } catch (error) {
+    console.error("Add equipment error:", error);
+    console.log("Backend response:", error.response?.data);
 
-      alert(
-        error.response?.data?.msg ||
-          error.response?.data?.message ||
-          "Failed to add equipment",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    const errorMessage =
+      error.response?.data?.msg ||
+      error.response?.data?.message ||
+      "Failed to add equipment. Please try again.";
+
+    showFlashMessage("error", errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // CANCEL
   const handleCancel = () => {
@@ -486,7 +476,24 @@ function AddEquipmentPage() {
           </div>
         </div>
 
-        <form style={s.body} className="eq-card" onSubmit={handleSubmit}>
+        <form style={s.body} className="eq-card" onSubmit={handleSubmit} noValidate>
+          {formError && (
+            <div
+              role="alert"
+              style={{
+                background: "#f8d7da",
+                color: "#842029",
+                border: "1px solid #f5c2c7",
+                borderRadius: "8px",
+                padding: "12px 16px",
+                marginBottom: "20px",
+                fontSize: "14px",
+              }}
+            >
+              <strong>⚠ </strong>
+              {formError}
+            </div>
+          )}
           {/* BASIC INFORMATION */}
           <div style={s.sectionTitle}>Basic Information</div>
 
@@ -601,42 +608,6 @@ function AddEquipmentPage() {
               onBlur={blur}
               required
             />
-          </div>
-
-          <div style={s.row} className="eq-row-2">
-            <div style={s.group}>
-              <label style={s.label}>Latitude *</label>
-
-              <input
-                name="lat"
-                value={formData.lat}
-                style={s.input(focused === "lat")}
-                type="number"
-                step="any"
-                placeholder="e.g. 26.8467"
-                onChange={handleChange}
-                onFocus={focus("lat")}
-                onBlur={blur}
-                required
-              />
-            </div>
-
-            <div style={s.group}>
-              <label style={s.label}>Longitude *</label>
-
-              <input
-                name="lng"
-                value={formData.lng}
-                style={s.input(focused === "lng")}
-                type="number"
-                step="any"
-                placeholder="e.g. 80.9462"
-                onChange={handleChange}
-                onFocus={focus("lng")}
-                onBlur={blur}
-                required
-              />
-            </div>
           </div>
 
           {/* RATING */}
