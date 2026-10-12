@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ServerContext from "../../Context/ServerContext.js";
+import { showFlashMessage } from "./FlashMessage.jsx";
 
 const clr = {
   primary: "#4a7c59",
@@ -175,6 +176,7 @@ function LoginForm({ onSwitch }) {
     email: "",
     password: "",
   });
+  const [formError, setFormError] = useState("");
 
   const navigate = useNavigate();
 
@@ -183,18 +185,27 @@ function LoginForm({ onSwitch }) {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setFormError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
+
+    if (!emailRegex.test(formData.email.trim())) {
+      setFormError("Please enter a valid email ending with .com");
+      return;
+    }
 
     const result = await login(formData);
 
     if (result?.success) {
-      alert("Login successfully");
+     showFlashMessage("success", "Login successful!");
       navigate("/");
     } else {
-      alert(result?.message || "Email or password incorrect");
+      setFormError("Email or password is incorrect" || result?.message );
     }
   };
 
@@ -244,6 +255,19 @@ function LoginForm({ onSwitch }) {
         />
       </div>
 
+      {formError && (
+        <p
+          style={{
+            color: "#dc3545",
+            fontSize: "14px",
+            marginBottom: "12px",
+            textAlign: "center",
+          }}
+        >
+          {formError}
+        </p>
+      )}
+
       {/* Login Button */}
       <button type="submit" style={s.submitBtn} disabled={loading}>
         {loading ? "Logging in..." : "Login"}
@@ -273,6 +297,7 @@ function RegisterForm({ onSwitch }) {
     password: "",
     confirmPassword: "",
   });
+  const [formError, setFormError] = useState("");
 
   const navigate = useNavigate();
 
@@ -281,13 +306,23 @@ function RegisterForm({ onSwitch }) {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setFormError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+     setFormError("");
+
+     // Email validation
+     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/;
+
+     if (!emailRegex.test(formData.email.trim())) {
+       setFormError("Please enter a valid email ending with .com");
+       return;
+     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      setFormError("Passwords do not match");
       return;
     }
 
@@ -295,7 +330,7 @@ function RegisterForm({ onSwitch }) {
       formData.password.length < 8 ||
       formData.password.length > 16
     ) {
-      alert("Password must be between 8 and 16 characters");
+       setFormError("Password must be between 8 and 16 characters");
       return;
     }
 
@@ -310,12 +345,17 @@ function RegisterForm({ onSwitch }) {
     const result = await register(registerData);
 
     if (result?.success) {
-      alert("Account created successfully");
+      showFlashMessage(
+        "success",
+        "Account created successfully! Please login.",
+      );
 
       // Redirect to Login after successful registration
       navigate("/login");
     } else {
-      alert(result?.message || "Registration failed");
+       setFormError(
+          "Registration failed. Please try again." || result?.message,
+       );
     }
   };
 
@@ -433,13 +473,21 @@ function RegisterForm({ onSwitch }) {
           required
         />
       </div>
+      {formError && (
+        <p
+          style={{
+            color: "#dc3545",
+            fontSize: "14px",
+            marginBottom: "12px",
+            textAlign: "center",
+          }}
+        >
+          {formError}
+        </p>
+      )}
 
       {/* Submit */}
-      <button
-        type="submit"
-        style={s.submitBtn}
-        disabled={loading}
-      >
+      <button type="submit" style={s.submitBtn} disabled={loading}>
         {loading ? "Creating Account..." : "Create Account"}
       </button>
 

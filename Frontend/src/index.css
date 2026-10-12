@@ -22,3 +22,25 @@
     height: 250px;
   }
 }
+
+/* Footer responsive design */
+
+@media (max-width: 850px) {
+  .fers-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 30px 20px !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .fers-footer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 25px !important;
+  }
+
+  .fers-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start !important;
+    text-align: left;
+  }
+}

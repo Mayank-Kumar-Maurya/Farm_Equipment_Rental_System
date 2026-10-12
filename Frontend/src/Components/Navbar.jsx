@@ -1,13 +1,9 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ServerContext from "../Context/ServerContext.js";
+import { showFlashMessage } from "./Pages/FlashMessage.jsx";
 
 const API_URL = "http://localhost:8080";
 
@@ -190,18 +186,14 @@ function Navbar() {
       navigate(`/search-results?search=${encodeURIComponent(search)}`);
     } catch (error) {
       console.error("Search error:", error);
-      alert(
-        error.response?.data?.msg || "Unable to search equipment."
-      );
+      alert(error.response?.data?.msg || "Unable to search equipment.");
     } finally {
       setSearchLoading(false);
     }
   };
 
   // Profile initial
-  const profileInitial = (
-    profile?.name || user?.name || user?.username || "M"
-  )
+  const profileInitial = (profile?.name || user?.name || user?.username || "M")
     .charAt(0)
     .toUpperCase();
 
@@ -213,12 +205,9 @@ function Navbar() {
       setProfileLoading(true);
       setProfileError("");
 
-      const response = await axios.get(
-        `${API_URL}/user/viewMyProfile`,
-        {
-          headers: { token },
-        }
-      );
+      const response = await axios.get(`${API_URL}/user/viewMyProfile`, {
+        headers: { token },
+      });
 
       setProfile({
         name: response.data.name,
@@ -230,8 +219,7 @@ function Navbar() {
       console.error("Profile error:", error);
 
       setProfileError(
-        error.response?.data?.msg ||
-          "Unable to load profile details."
+        error.response?.data?.msg || "Unable to load profile details.",
       );
     } finally {
       setProfileLoading(false);
@@ -270,10 +258,7 @@ function Navbar() {
   // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileOpen(false);
       }
     };
@@ -281,10 +266,7 @@ function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -302,6 +284,7 @@ function Navbar() {
   // Logout
   const handleLogout = () => {
     logout();
+    showFlashMessage("success", "Logged out successfully!");
     setProfile(null);
     setProfileOpen(false);
     setMenuOpen(false);
@@ -321,6 +304,17 @@ function Navbar() {
     setMenuOpen(false);
     navigate("/my-equipment");
   };
+
+  // profile open
+  const profileDetailsRef = useRef(null);
+  useEffect(() => {
+    if (profileOpen && window.innerWidth <= 850) {
+      profileDetailsRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [profileOpen]);
 
   // Render profile details
   const renderProfileDetails = () => (
@@ -354,9 +348,7 @@ function Navbar() {
       {profileLoading ? (
         <div className="text-center py-3">
           <div className="spinner-border spinner-border-sm text-success" />
-          <p className="small text-muted mt-2 mb-0">
-            Loading profile...
-          </p>
+          <p className="small text-muted mt-2 mb-0">Loading profile...</p>
         </div>
       ) : profileError ? (
         <div>
@@ -417,19 +409,15 @@ function Navbar() {
         View Profile
       </button>
 
-      <button
-        className="btn btn-outline-danger w-100"
-        onClick={handleLogout}
-      >
+      <button className="btn btn-outline-danger w-100" onClick={handleLogout}>
         Logout
       </button>
     </>
   );
 
   return (
-    <nav style={styles.nav}>
+    <nav className="fers-navbar" style={styles.nav}>
       <div style={styles.navContainer}>
-
         {/* Brand */}
         <a href="/" style={styles.brand}>
           🌾 FERS
@@ -439,9 +427,7 @@ function Navbar() {
         {/* Hamburger */}
         <button
           type="button"
-          className={`navbar-toggler-custom ${
-            menuOpen ? "menu-active" : ""
-          }`}
+          className={`navbar-toggler-custom ${menuOpen ? "menu-active" : ""}`}
           onClick={() => {
             setMenuOpen((prev) => !prev);
             setProfileOpen(false);
@@ -480,7 +466,6 @@ function Navbar() {
 
         {/* Desktop actions */}
         <div className="desktop-actions">
-
           <form onSubmit={handleSearch} className="navbar-search">
             <input
               style={styles.searchInput}
@@ -540,15 +525,11 @@ function Navbar() {
       {/* Mobile menu */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         <div className="mobile-menu-content">
-
           {/* Mobile links */}
           <ul className="mobile-nav-links">
             {navLinks.map((link, i) => (
               <li key={i}>
-                <a
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                >
+                <a href={link.href} onClick={() => setMenuOpen(false)}>
                   {link.label}
                 </a>
               </li>
@@ -594,7 +575,6 @@ function Navbar() {
             </div>
           ) : (
             <div className="mobile-profile">
-
               <button
                 type="button"
                 className="mobile-profile-toggle"
@@ -607,21 +587,19 @@ function Navbar() {
                   }
                 }}
               >
-                <span style={styles.profileIcon}>
-                  {profileInitial}
-                </span>
+                <span style={styles.profileIcon}>{profileInitial}</span>
 
                 <span className="fw-semibold">My Profile</span>
 
-                <span className="ms-auto">
-                  {profileOpen ? "▲" : "▼"}
-                </span>
+                <span className="ms-auto">{profileOpen ? "▲" : "▼"}</span>
               </button>
 
               <div
+                ref={profileDetailsRef}
                 className={`mobile-profile-details ${
                   profileOpen ? "profile-visible" : ""
                 }`}
+                style={{ scrollMarginTop: "85px" }}
               >
                 {renderProfileDetails()}
               </div>
@@ -717,7 +695,7 @@ function Navbar() {
         }
 
         .mobile-menu.open {
-          max-height: 750px;
+          max-height: 2000px;
           opacity: 1;
           transform: translateY(0);
           border-top-color: rgba(255,255,255,0.2);
@@ -794,29 +772,30 @@ function Navbar() {
           text-align: left;
         }
 
-        .mobile-profile-details {
-          max-height: 0;
-          opacity: 0;
-          overflow: hidden;
-          padding: 0 12px;
-          margin-top: 0;
-          background: #fff;
-          color: #333;
-          border-radius: 10px;
-          transition:
-            max-height 0.35s ease,
-            opacity 0.25s ease,
-            padding 0.3s ease,
-            margin 0.3s ease;
-        }
+        
+.mobile-profile-details {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 12px;
+  margin-top: 0;
+  background: #fff;
+  color: #333;
+  border-radius: 10px;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.3s ease,
+    padding 0.3s ease,
+    margin 0.3s ease;
+}
 
-        .mobile-profile-details.profile-visible {
-          max-height: 550px;
-          opacity: 1;
-          padding: 15px 12px;
-          margin-top: 10px;
-          overflow-y: auto;
-        }
+.mobile-profile-details.profile-visible {
+  max-height: 1000px;
+  opacity: 1;
+  padding: 15px 12px;
+  margin-top: 10px;
+  overflow: visible;
+}
 
         @media (max-width: 1050px) {
           .nav-links-custom {
@@ -872,6 +851,12 @@ function Navbar() {
           .navbar-toggler-custom span {
             transition: none !important;
           }
+        }
+
+        @media (max-width: 850px) {
+         .fers-navbar {
+         position: relative !important;
+         }
         }
       `}</style>
     </nav>
