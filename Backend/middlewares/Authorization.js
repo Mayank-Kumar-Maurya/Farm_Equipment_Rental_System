@@ -36,13 +36,15 @@ const isOwner = async (req, res, next) => {
 
         let { id } = req.params;
         let getOwner = await Product.findById(id);
-        console.log(getOwner.owner, "==", req.user.userId)
+        if (!id || !getOwner) {
+            return res.status(400).json({ msg: "Equipment not found" });
+        }
 
         if (!getOwner.owner.equals(req.user.userId)) {
             return res.status(401).json({ msg: "You are not authorized to make changes in this equipment" })
         }
 
-        next();
+        return next();
 
     } catch (error) {
         console.log("error at owner middleware", error)
@@ -60,13 +62,12 @@ const isComplainOwner = async (req, res, next) => {
         if (!complainId || !getOwner) {
             return res.status(400).json({ msg: "complain not found" })
         }
-        console.log(getOwner.author, "==", req.user.userId)
 
         if (!getOwner.author.equals(req.user.userId)) {
             return res.status(401).json({ msg: "You are not authorized to make changes " })
         }
 
-        next();
+        return next();
 
     } catch (error) {
         console.log("error at Complain owner middleware", error)
@@ -83,13 +84,12 @@ const isReviewOwner = async (req, res, next) => {
         if (!reviewId || !getOwner) {
             return res.status(400).json({ msg: "review not found" })
         }
-        console.log(getOwner.author, "==", req.user.userId)
 
         if (!getOwner.author.equals(req.user.userId)) {
             return res.status(401).json({ msg: "You are not authorized to make changes" })
         }
 
-        next();
+        return next();
 
     } catch (error) {
         console.log("error at Review owner middleware", error)
@@ -106,17 +106,27 @@ const isBookingOwner = async (req, res, next) => {
         if (!bookingId || !getOwner) {
             return res.status(400).json({ msg: "booking not found" })
         }
-        console.log(getOwner.who_booked, "==", req.user.userId)
 
         if (!getOwner.who_booked.equals(req.user.userId)) {
             return res.status(401).json({ msg: "You are not authorized to make changes" })
         }
 
-        next();
+        return next();
 
     } catch (error) {
         console.log("error at Booking owner middleware", error)
         next(error)
+    }
+}
+
+const isAdmin = (req, res, next) => {
+    console.log("check admin",req.user.userId.equals("6acb6e5bac03f23d06a57909"))
+
+    if (req.user.userId.equals("6acb6e5bac03f23d06a57909")) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 

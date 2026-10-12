@@ -3,7 +3,7 @@ import React from "react";
 function Slider() {
   return (
     <>
-      <div id="carouselExampleCaptions" className="carousel slide">
+      <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
         <div className="carousel-indicators">
           <button
             type="button"
@@ -30,9 +30,10 @@ function Slider() {
         </div>
 
         <div className="carousel-inner">
-          <div className="carousel-item active">
+          <div className="carousel-item active" data-bs-interval="5000">
             <img
-              src="https://i.pinimg.com/736x/8b/94/00/8b9400e0ada98b434ca21c14c634f513.jpg"
+              src='/first.png'
+              // src="https://i.pinimg.com/736x/8b/94/00/8b9400e0ada98b434ca21c14c634f513.jpg"
               className="d-block w-100 slider-img"
               alt="Farm tractor"
             />
@@ -40,14 +41,15 @@ function Slider() {
             <div className="carousel-caption d-none d-md-block">
               <h5>FARM EQUIPMENT RENTAL SYSTEM</h5>
               <p>
-                Some representative placeholder content for the first slide.
+              Farm Equipment Rental System (FERS) is an online platform designed to connect farmers and agricultural equipment owners.
               </p>
             </div>
           </div>
 
-          <div className="carousel-item">
+          <div className="carousel-item" data-bs-interval="3000">
             <img
-              src="https://tse2.mm.bing.net/th/id/OIP.fIZEUcswBLwLnum21Odu8QHaD7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
+              src="/sec.jpg"
+              // src="https://tse2.mm.bing.net/th/id/OIP.fIZEUcswBLwLnum21Odu8QHaD7?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
               className="d-block w-100 slider-img"
               alt="Agricultural sprayer"
             />
@@ -55,14 +57,15 @@ function Slider() {
             <div className="carousel-caption d-none d-md-block">
               <h5>FARM EQUIPMENT RENTAL SYSTEM</h5>
               <p>
-                Some representative placeholder content for the second slide.
+              Farm Equipment Rental System (FERS) is an online platform designed to connect farmers and agricultural equipment owners.
               </p>
             </div>
           </div>
 
           <div className="carousel-item">
             <img
-              src="https://images.unsplash.com/photo-1614977645968-6db1d7798ac7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29tYmluZSUyMGhhcnZlc3RlcnxlbnwwfHwwfHx8MA%3D%3D"
+              src="/third.jpg"
+              // src="https://images.unsplash.com/photo-1614977645968-6db1d7798ac7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Y29tYmluZSUyMGhhcnZlc3RlcnxlbnwwfHwwfHx8MA%3D%3D"
               className="d-block w-100 slider-img"
               alt="Farm machinery"
             />
@@ -70,7 +73,7 @@ function Slider() {
             <div className="carousel-caption d-none d-md-block">
               <h5>FARM EQUIPMENT RENTAL SYSTEM</h5>
               <p>
-                Some representative placeholder content for the third slide.
+              Farm Equipment Rental System (FERS) is an online platform designed to connect farmers and agricultural equipment owners.
               </p>
             </div>
           </div>

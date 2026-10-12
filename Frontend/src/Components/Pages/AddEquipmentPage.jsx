@@ -357,22 +357,22 @@ function AddEquipmentPage() {
       return;
     }
 
-    const lat = Number(formData.lat);
-    const lng = Number(formData.lng);
+    // const lat = Number(formData.lat);
+    // const lng = Number(formData.lng);
 
-    if (
-      formData.lat === "" ||
-      formData.lng === "" ||
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng) ||
-      lat < -90 ||
-      lat > 90 ||
-      lng < -180 ||
-      lng > 180
-    ) {
-      alert("Please enter valid latitude and longitude.");
-      return;
-    }
+    // if (
+    //   formData.lat === "" ||
+    //   formData.lng === "" ||
+    //   !Number.isFinite(lat) ||
+    //   !Number.isFinite(lng) ||
+    //   lat < -90 ||
+    //   lat > 90 ||
+    //   lng < -180 ||
+    //   lng > 180
+    // ) {
+    //   alert("Please enter valid latitude and longitude.");
+    //   return;
+    // }
 
     if (photos.length === 0) {
       alert("Please upload at least one photo.");
@@ -394,8 +394,8 @@ function AddEquipmentPage() {
 
       // Location information
       data.append("address", formData.address);
-      data.append("lat", lat);
-      data.append("lng", lng);
+      // data.append("lat", lat);
+      // data.append("lng", lng);
 
       // Backend expects upload.array("images", 6)
       photos.forEach((photo) => {
@@ -603,7 +603,7 @@ function AddEquipmentPage() {
             />
           </div>
 
-          <div style={s.row} className="eq-row-2">
+          {/* <div style={s.row} className="eq-row-2">
             <div style={s.group}>
               <label style={s.label}>Latitude *</label>
 
@@ -637,7 +637,7 @@ function AddEquipmentPage() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
           {/* RATING */}
           <div style={s.sectionTitle}>Equipment Rating</div>

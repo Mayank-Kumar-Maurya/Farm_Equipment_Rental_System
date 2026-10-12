@@ -14,6 +14,7 @@ const AboutRoute = require('./Routes/AboutRoute');
 const ComplainRoute = require('./Routes/ComplainRoute');
 const ReviewRoute = require('./Routes/ReviewRoute');
 const BookingRoute = require('./Routes/BookingRoute');
+const AIBot = require('./Routes/AIBot');
 
 const dburl = process.env.dburl || 'mongodb://127.0.0.1:27017/FERS';
 
@@ -38,6 +39,7 @@ app.use("/search", SearchProduct);
 app.use("/auth", LoginRoute);
 app.use("/user", UserRoute);
 app.use("/about", AboutRoute);
+app.use("/aibot", AIBot);
 app.use("/:id/complains", ComplainRoute);  // id-> equipment_id eg:- localhost:8080/12345/complains 
 app.use("/:id/reviews", ReviewRoute);
 
