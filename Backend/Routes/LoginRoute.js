@@ -17,7 +17,6 @@ router.route("/register")
         let {username, name, email, password, phone_no} = req.body;
         if(!username || !name|| !email || !password || !phone_no)
         {
-            console.log('all fiel are required');
             return res.status(400).json({msg:'all fields are required'});
         }
 
@@ -46,7 +45,6 @@ router.route('/login')
         const {email, password} = req.body;
         if(!email || !password)
         {
-            console.log('all fiel are required');
             return res.status(401).json({msg:'all fields are required'});
         }
 
@@ -54,7 +52,6 @@ router.route('/login')
         console.log(user)
         if(!user)
         {
-            console.log('invalid credentials');
             return res.status(401).json({msg:'invalid credentials'});
         }
         
@@ -62,7 +59,6 @@ router.route('/login')
        
         if(!match)
         {
-            console.log('invalid credentials');
             return res.status(401).json({msg:'invalid credentials2'});
         }
         let token = await user.generateToken();

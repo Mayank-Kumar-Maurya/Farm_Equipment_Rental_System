@@ -621,7 +621,7 @@ function EditEquipment() {
             />
           </div>
 
-          <div style={styles.row} className="edit-row-2">
+          {/* <div style={styles.row} className="edit-row-2">
             <div style={styles.group}>
               <label style={styles.label}>Latitude *</label>
               <input
@@ -649,7 +649,7 @@ function EditEquipment() {
                 required
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Rating */}
           <div style={styles.sectionTitle}>Equipment Rating</div>

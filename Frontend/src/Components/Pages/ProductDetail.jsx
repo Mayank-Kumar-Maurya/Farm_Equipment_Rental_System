@@ -438,12 +438,12 @@ const ProductDetail = () => {
                 📍 {equipment.location?.address || "Location not provided"}
               </p>
 
-              {equipment.location?.coordinates?.length === 2 && (
+              {/* {equipment.location?.coordinates?.length === 2 && (
                 <p className="small text-muted mb-0">
                   Longitude: {equipment.location.coordinates[0]}, Latitude:{" "}
                   {equipment.location.coordinates[1]}
                 </p>
-              )}
+              )} */}
 
               <hr className="my-4" />
 

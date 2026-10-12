@@ -104,7 +104,7 @@ function HomePage() {
       </div>
 
       {/* FEATURES */}
-      <div className="container py-4">
+      {/* <div className="container py-4">
         <div className="row g-3">
           {features.map((feature, index) => (
             <div key={index} className="col-12 col-sm-6 col-lg-3">
@@ -121,7 +121,7 @@ function HomePage() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* CATEGORIES */}
       <div className="container py-3">
