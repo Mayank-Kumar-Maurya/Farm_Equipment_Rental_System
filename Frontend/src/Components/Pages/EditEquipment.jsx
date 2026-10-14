@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
+import { showFlashMessage } from "./FlashMessage";
 
 const API_URL = "http://localhost:8080";
 
@@ -184,8 +185,6 @@ function EditEquipment() {
     price: "",
     description: "",
     address: "",
-    lat: "",
-    lng: "",
   });
 
   const [existingImages, setExistingImages] = useState([]);
@@ -193,6 +192,7 @@ function EditEquipment() {
 
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [formError, setFormError] = useState("");
 
   // Fetch equipment details
   useEffect(() => {
@@ -216,16 +216,14 @@ function EditEquipment() {
           catergory: data.catergory || "",
           price: data.price ?? "",
           description: data.description || "",
-          address: data.location?.address || "",
-          lat: data.location?.coordinates?.[1] ?? "",
-          lng: data.location?.coordinates?.[0] ?? "",
+          address: data.location || "",
         });
 
         setRating(Number(data.rating) || 0);
         setExistingImages(data.images || []);
       } catch (error) {
         console.error("Fetch equipment error:", error);
-        alert(
+        setFormError(
           error.response?.data?.msg ||
             error.message ||
             "Unable to load equipment details.",
@@ -267,6 +265,7 @@ function EditEquipment() {
       ...prev,
       [name]: value,
     }));
+    setFormError("")
   };
 
   // Add new images
@@ -276,14 +275,14 @@ function EditEquipment() {
     const availableSlots = 6 - existingImages.length - newPhotos.length;
 
     if (availableSlots <= 0) {
-      alert("You can have a maximum of 6 photos.");
+      setFormError("You can have a maximum of 6 photos.");
       return;
     }
 
     const selected = selectedFiles.slice(0, availableSlots);
 
     if (selected.length < selectedFiles.length) {
-      alert(`You can select only ${availableSlots} more photo(s).`);
+      setFormError(`You can select only ${availableSlots} more photo(s).`);
     }
 
     const validFiles = selected.filter((file) =>
@@ -291,7 +290,7 @@ function EditEquipment() {
     );
 
     if (validFiles.length !== selected.length) {
-      alert("Please select only image files.");
+      setFormError("Please select only image files.");
     }
 
     const photos = validFiles.map((file) => ({
@@ -326,70 +325,53 @@ function EditEquipment() {
     e.preventDefault();
 
     if (!token) {
-      alert("Please login first.");
+      setFormError("Please login first.");
       navigate("/login");
       return;
     }
 
     if (!formData.name.trim()) {
-      alert("Please enter equipment name.");
+      setFormError("Please enter equipment name.");
       return;
     }
 
     if (!formData.brand.trim()) {
-      alert("Please enter brand.");
+      setFormError("Please enter brand.");
       return;
     }
 
     if (!formData.catergory) {
-      alert("Please select category.");
+      setFormError("Please select category.");
       return;
     }
 
     if (!formData.price || Number(formData.price) <= 0) {
-      alert("Please enter a valid rental price.");
+      setFormError("Please enter a valid rental price.");
       return;
     }
 
     if (!formData.description.trim()) {
-      alert("Please enter description.");
+      setFormError("Please enter description.");
       return;
     }
 
     if (!formData.address.trim()) {
-      alert("Please enter equipment address.");
+      setFormError("Please enter equipment address.");
       return;
     }
 
     if (rating < 1 || rating > 5) {
-      alert("Please select a rating.");
-      return;
-    }
-
-    const lat = Number(formData.lat);
-    const lng = Number(formData.lng);
-
-    if (
-      formData.lat === "" ||
-      formData.lng === "" ||
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng) ||
-      lat < -90 ||
-      lat > 90 ||
-      lng < -180 ||
-      lng > 180
-    ) {
-      alert("Please enter valid latitude and longitude.");
+      setFormError("Please select a rating.");
       return;
     }
 
     if (existingImages.length + newPhotos.length === 0) {
-      alert("Please keep or upload at least one photo.");
+      setFormError("Please keep or upload at least one photo.");
       return;
     }
 
     if (existingImages.length + newPhotos.length > 6) {
-      alert("Maximum 6 photos are allowed.");
+      setFormError("Maximum 6 photos are allowed.");
       return;
     }
 
@@ -404,9 +386,7 @@ function EditEquipment() {
       data.append("price", Number(formData.price));
       data.append("description", formData.description.trim());
       data.append("rating", rating);
-      data.append("address", formData.address.trim());
-      data.append("lat", lat);
-      data.append("lng", lng);
+      data.append("location", formData.address.trim());
 
       // Existing images to retain
       data.append("keepImages", JSON.stringify(existingImages));
@@ -422,13 +402,13 @@ function EditEquipment() {
         },
       });
 
-      alert("Equipment updated successfully!");
+       showFlashMessage("success", "Equipment updated successfully!");
       navigate(`/product/${id}`);
     } catch (error) {
       console.error("Update equipment error:", error);
       console.log("Backend response:", error.response?.data);
 
-      alert(
+      setFormError(
         error.response?.data?.msg ||
           error.response?.data?.message ||
           "Failed to update equipment.",
@@ -528,6 +508,7 @@ function EditEquipment() {
           style={styles.body}
           className="edit-form-body"
           onSubmit={handleSubmit}
+          noValidate
         >
           {/* Basic Information */}
           <div style={styles.sectionTitle}>Basic Information</div>
@@ -787,6 +768,18 @@ function EditEquipment() {
             )}
           </div>
 
+          {formError && (
+            <p
+              style={{
+                color: "#dc3545",
+                fontSize: "14px",
+                marginBottom: "12px",
+                textAlign: "center",
+              }}
+            >
+              {formError}
+            </p>
+          )}
           {/* Buttons */}
           <button
             type="submit"

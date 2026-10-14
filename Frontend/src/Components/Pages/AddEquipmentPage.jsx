@@ -476,24 +476,12 @@ const handleSubmit = async (e) => {
           </div>
         </div>
 
-        <form style={s.body} className="eq-card" onSubmit={handleSubmit} noValidate>
-          {formError && (
-            <div
-              role="alert"
-              style={{
-                background: "#f8d7da",
-                color: "#842029",
-                border: "1px solid #f5c2c7",
-                borderRadius: "8px",
-                padding: "12px 16px",
-                marginBottom: "20px",
-                fontSize: "14px",
-              }}
-            >
-              <strong>⚠ </strong>
-              {formError}
-            </div>
-          )}
+        <form
+          style={s.body}
+          className="eq-card"
+          onSubmit={handleSubmit}
+          noValidate
+        >
           {/* BASIC INFORMATION */}
           <div style={s.sectionTitle}>Basic Information</div>
 
@@ -719,6 +707,18 @@ const handleSubmit = async (e) => {
               </div>
             )}
           </div>
+          {formError && (
+            <p
+              style={{
+                color: "#dc3545",
+                fontSize: "14px",
+                marginBottom: "12px",
+                textAlign: "center",
+              }}
+            >
+              {formError}
+            </p>
+          )}
 
           {/* SUBMIT BUTTON */}
           <button

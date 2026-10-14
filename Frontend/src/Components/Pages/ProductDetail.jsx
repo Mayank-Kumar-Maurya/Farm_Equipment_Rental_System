@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
+import { showFlashMessage } from "./FlashMessage";
 
 const API_URL = "http://localhost:8080";
 
@@ -27,6 +28,7 @@ const ProductDetail = () => {
   const [complainMessage, setComplainMessage] = useState("");
   const [complainLoading, setComplainLoading] = useState(false);
   const [deletingComplainId, setDeletingComplainId] = useState(null);
+  // error
 
   // Fetch equipment details
   const fetchEquipment = async () => {
@@ -88,12 +90,12 @@ const ProductDetail = () => {
         },
       });
 
-      alert("Equipment deleted successfully!");
+      showFlashMessage("success", "Equipment deleted successfully!");
       navigate("/");
     } catch (err) {
       console.error("Delete error:", err);
 
-      alert(err.response?.data?.msg || "Unable to delete equipment.");
+      showFlashMessage("error", err.response?.data?.msg || "Unable to delete equipment.");
     } finally {
       setDeleting(false);
     }
@@ -104,13 +106,13 @@ const ProductDetail = () => {
     e.preventDefault();
 
     if (!token) {
-      alert("Please login to give a review.");
+      setError("Please login to give a review.");
       navigate("/login");
       return;
     }
 
     if (!reviewComment.trim()) {
-      alert("Please enter your comment.");
+      setError("Please enter your comment.");
       return;
     }
 
@@ -130,7 +132,7 @@ const ProductDetail = () => {
         },
       );
 
-      alert(response.data.msg || "Review submitted successfully!");
+      showFlashMessage("success", "Review submitted successfully!");
 
       setReviewComment("");
       setReviewRating(5);
@@ -142,7 +144,7 @@ const ProductDetail = () => {
       setEquipment(updatedResponse.data.Equipment);
     } catch (error) {
       console.error("Error submitting review:", error);
-      alert(
+      setError(
         error.response?.data?.msg ||
           "Failed to submit review. Please try again.",
       );
@@ -154,7 +156,7 @@ const ProductDetail = () => {
   // deleteReview
   const handleDeleteReview = async (reviewId) => {
     if (!token) {
-      alert("Please login first.");
+      setError("Please login first.");
       navigate("/login");
       return;
     }
@@ -177,13 +179,13 @@ const ProductDetail = () => {
         },
       );
 
-      alert(response.data.msg || "Review deleted successfully!");
+      showFlashMessage("success", "Review deleted successfully!");
 
       await fetchEquipment();
     } catch (error) {
       console.error("Error deleting review:", error);
 
-      alert(error.response?.data?.msg || "Failed to delete review.");
+      setError(error.response?.data?.msg || "Failed to delete review.");
     } finally {
       setDeletingReviewId(null);
     }
@@ -194,13 +196,13 @@ const ProductDetail = () => {
     e.preventDefault();
 
     if (!token) {
-      alert("Please login to report an issue.");
+      setError("Please login to report an issue.");
       navigate("/login");
       return;
     }
 
     if (!complainMessage.trim()) {
-      alert("Please enter your complaint.");
+      setError("Please enter your complaint.");
       return;
     }
 
@@ -219,7 +221,7 @@ const ProductDetail = () => {
         },
       );
 
-      alert(response.data.msg || "Complaint registered successfully!");
+      showFlashMessage("success", "Complaint registered successfully!");
 
       setComplainMessage("");
       setShowComplainForm(false);
@@ -228,7 +230,7 @@ const ProductDetail = () => {
     } catch (error) {
       console.error("Error submitting complaint:", error);
 
-      alert(
+      setError(
         error.response?.data?.msg ||
           "Failed to submit complaint. Please try again.",
       );
@@ -240,7 +242,7 @@ const ProductDetail = () => {
   // handleDeleteComplain
   const handleDeleteComplain = async (complainId) => {
     if (!token) {
-      alert("Please login first.");
+      setError("Please login first.");
       navigate("/login");
       return;
     }
@@ -263,13 +265,13 @@ const ProductDetail = () => {
         },
       );
 
-      alert(response.data.msg || "Complaint deleted successfully!");
+      showFlashMessage("success", "Complaint deleted successfully!");
 
       await fetchEquipment();
     } catch (error) {
       console.error("Error deleting complaint:", error);
 
-      alert(error.response?.data?.msg || "Failed to delete complaint.");
+      setError(error.response?.data?.msg || "Failed to delete complaint.");
     } finally {
       setDeletingComplainId(null);
     }
@@ -435,7 +437,7 @@ const ProductDetail = () => {
               <h5 className="fw-bold text-dark">Equipment Location</h5>
 
               <p className="text-secondary mt-2 mb-2">
-                📍 {equipment.location?.address || "Location not provided"}
+                📍 {equipment.location || "Location not provided"}
               </p>
 
               {/* {equipment.location?.coordinates?.length === 2 && (
@@ -514,6 +516,18 @@ const ProductDetail = () => {
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h4 className="fw-bold mb-0">Customer Reviews</h4>
 
+              {error && (
+                <p
+                  style={{
+                    color: "#dc3545",
+                    fontSize: "14px",
+                    marginBottom: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
               <button
                 type="button"
                 className="btn btn-dark px-4 rounded-pill"
@@ -561,6 +575,18 @@ const ProductDetail = () => {
                     />
                   </div>
 
+                  {error && (
+                    <p
+                      style={{
+                        color: "#dc3545",
+                        fontSize: "14px",
+                        marginBottom: "12px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {error}
+                    </p>
+                  )}
                   <button
                     type="submit"
                     className="btn btn-dark px-4 rounded-pill"
@@ -665,6 +691,18 @@ const ProductDetail = () => {
                           {review.comment}
                         </p>
 
+                        {error && (
+                          <p
+                            style={{
+                              color: "#dc3545",
+                              fontSize: "14px",
+                              marginBottom: "12px",
+                              textAlign: "center",
+                            }}
+                          >
+                            {error}
+                          </p>
+                        )}
                         {/* Actions */}
                         <div className="d-flex align-items-center gap-3">
                           {isReviewOwner && (
@@ -704,6 +742,18 @@ const ProductDetail = () => {
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h4 className="fw-bold mb-0">Complaints</h4>
 
+              {error && (
+                <p
+                  style={{
+                    color: "#dc3545",
+                    fontSize: "14px",
+                    marginBottom: "12px",
+                    textAlign: "center",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
               <button
                 type="button"
                 className="btn btn-dark px-4"
@@ -735,6 +785,18 @@ const ProductDetail = () => {
                       />
                     </div>
 
+                    {error && (
+                      <p
+                        style={{
+                          color: "#dc3545",
+                          fontSize: "14px",
+                          marginBottom: "12px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {error}
+                      </p>
+                    )}
                     <button
                       type="submit"
                       className="btn btn-dark px-4"

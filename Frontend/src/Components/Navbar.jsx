@@ -284,7 +284,7 @@ function Navbar() {
   // Logout
   const handleLogout = () => {
     logout();
-    showFlashMessage("success", "Logged out successfully!");
+    showFlashMessage("success", "User logged out successfully!");
     setProfile(null);
     setProfileOpen(false);
     setMenuOpen(false);

@@ -202,7 +202,7 @@ function LoginForm({ onSwitch }) {
     const result = await login(formData);
 
     if (result?.success) {
-     showFlashMessage("success", "Login successful!");
+     showFlashMessage("success", "User loggedIn successfully!");
       navigate("/");
     } else {
       setFormError("Email or password is incorrect" || result?.message );
