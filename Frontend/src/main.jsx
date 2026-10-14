@@ -7,7 +7,6 @@ import ServerProvider from "./Context/ServerProvider.jsx";
 import Home from "./Components/Home.jsx";
 import AuthPage from "./Components/Pages/AuthPage.jsx";
 import AddEquipmentPage from "./Components/Pages/AddEquipmentPage.jsx";
-import Logout from "./Components/Pages/Logout.jsx";
 import ProductDetail from "./Components/Pages/ProductDetail";
 import MyProfile from "./Components/Pages/MyProfile.jsx";
 import SearchResults from "./Components/Pages/SearchResult.jsx";
@@ -36,10 +35,6 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <AuthPage />,
-      },
-      {
-        path: "/logout",
-        element: <Logout />,
       },
       {
         path: "/addEquipments",

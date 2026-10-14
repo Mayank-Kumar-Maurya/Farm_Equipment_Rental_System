@@ -33,7 +33,7 @@ const FlashMessage = () => {
 
     const timer = setTimeout(() => {
       setFlash(null);
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [flash]);
@@ -47,8 +47,9 @@ const FlashMessage = () => {
       role="status"
       style={{
         position: "fixed",
-        top: "20px",
-        right: "20px",
+        top: "80px", // Just below the navbar
+        left: "50%",
+        transform: "translateX(-50%)",
         zIndex: 9999,
         padding: "14px 20px",
         borderRadius: "10px",
@@ -59,6 +60,8 @@ const FlashMessage = () => {
         display: "flex",
         alignItems: "center",
         gap: "10px",
+        maxWidth: "90%",
+        width: "max-content",
       }}
     >
       <strong>{isSuccess ? "✓" : "✕"}</strong>
