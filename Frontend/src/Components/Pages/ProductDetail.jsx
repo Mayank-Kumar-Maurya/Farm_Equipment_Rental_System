@@ -28,7 +28,83 @@ const ProductDetail = () => {
   const [complainMessage, setComplainMessage] = useState("");
   const [complainLoading, setComplainLoading] = useState(false);
   const [deletingComplainId, setDeletingComplainId] = useState(null);
-  // error
+  // Booking
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingLocation, setBookingLocation] = useState("");
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState("");
+
+  // Submit equipment booking request
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    setBookingError("");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    if (isOwner) {
+      setBookingError("You cannot book your own equipment.");
+      return;
+    }
+
+    if (!bookingDate || !bookingLocation.trim()) {
+      setBookingError("Please fill in all required fields.");
+      return;
+    }
+
+    // Prevent booking past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(`${bookingDate}T00:00:00`);
+
+    if (selectedDate < today) {
+      setBookingError("Please select today or a future date.");
+      return;
+    }
+
+    try {
+      setBookingLoading(true);
+
+      await axios.post(
+        `${API_URL}/${id}/bookings`,
+        {
+          date: bookingDate,
+          location: bookingLocation.trim(),
+        },
+        {
+          headers: {
+            token: token,
+          },
+        },
+      );
+
+      showFlashMessage(
+        "success",
+        "Booking request sent to the equipment owner successfully!",
+      );
+
+      setBookingDate("");
+      setBookingLocation("");
+      setBookingError("");
+      setShowBookingForm(false);
+
+      // Refresh equipment details
+      await fetchEquipment();
+    } catch (error) {
+      console.error("Booking request error:", error);
+
+      setBookingError(
+        error.response?.data?.msg ||
+          "Failed to send booking request. Please try again.",
+      );
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   // Fetch equipment details
   const fetchEquipment = async () => {
@@ -95,7 +171,10 @@ const ProductDetail = () => {
     } catch (err) {
       console.error("Delete error:", err);
 
-      showFlashMessage("error", err.response?.data?.msg || "Unable to delete equipment.");
+      showFlashMessage(
+        "error",
+        err.response?.data?.msg || "Unable to delete equipment.",
+      );
     } finally {
       setDeleting(false);
     }
@@ -477,8 +556,17 @@ const ProductDetail = () => {
               <div className="d-flex flex-wrap gap-2 mt-4">
                 {/* Book Button */}
                 <button
-                  onClick={() => navigate(`/book-equipment/${equipment._id}`)}
-                  className="btn btn-success flex-grow-1 py-2 fw-semibold"
+                  type="button"
+                  className="btn btn-success flex-grow-1"
+                  onClick={() => {
+                    if (!token) {
+                      navigate("/login");
+                      return;
+                    }
+
+                    setBookingError("");
+                    setShowBookingForm(true);
+                  }}
                 >
                   Book Equipment
                 </button>
@@ -872,6 +960,89 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      {showBookingForm && (
+        <div
+          className="booking-overlay"
+          onClick={() => {
+            if (!bookingLoading) {
+              setShowBookingForm(false);
+              setBookingError("");
+            }
+          }}
+        >
+          <div className="booking-popup" onClick={(e) => e.stopPropagation()}>
+            <h4 className="booking-title">Book Equipment</h4>
+
+            <form onSubmit={handleBookingSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Equipment</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={equipment.name}
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Booking Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={bookingDate}
+                  min={new Date(
+                    Date.now() - new Date().getTimezoneOffset() * 60000,
+                  )
+                    .toISOString()
+                    .slice(0, 10)}
+                  onChange={(e) => setBookingDate(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Location</label>
+                <textarea
+                  className="form-control"
+                  rows="2"
+                  placeholder="Enter delivery or equipment usage location"
+                  value={bookingLocation}
+                  onChange={(e) => setBookingLocation(e.target.value)}
+                  required
+                />
+              </div>
+
+              {bookingError && (
+                <div className="alert alert-danger py-2">{bookingError}</div>
+              )}
+
+              <div className="booking-actions">
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  disabled={bookingLoading}
+                >
+                  {bookingLoading ? "Sending..." : "Send Request"}
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  disabled={bookingLoading}
+                  onClick={() => {
+                    setShowBookingForm(false);
+                    setBookingError("");
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

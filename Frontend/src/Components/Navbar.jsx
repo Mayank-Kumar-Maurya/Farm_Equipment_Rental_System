@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState} from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import ServerContext from "../Context/ServerContext.js";
 import { showFlashMessage } from "./Pages/FlashMessage.jsx";
@@ -9,7 +9,7 @@ const API_URL = "http://localhost:8080";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Equipment", href: "/#equipment" },
+  { label: "Equipment", href: "/#equipment"},
   { label: "Add Equipments", href: "/addEquipments" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -403,6 +403,17 @@ function Navbar() {
       </button>
 
       <button
+        className="btn btn-outline-warning w-100 mb-2"
+        onClick={() => {
+          setProfileOpen(false);
+          setMenuOpen(false);
+          navigate("/booking-request");
+        }}
+      >
+        Booking_Request
+      </button>
+
+      <button
         className="btn btn-success w-100 mb-2"
         onClick={handleViewProfile}
       >
@@ -419,10 +430,10 @@ function Navbar() {
     <nav className="fers-navbar" style={styles.nav}>
       <div style={styles.navContainer}>
         {/* Brand */}
-        <a href="/" style={styles.brand}>
+        <NavLink to="/" style={styles.brand}>
           🌾 FERS
           <span style={styles.brandBadge}>RENTAL</span>
-        </a>
+        </NavLink>
 
         {/* Hamburger */}
         <button
@@ -444,8 +455,8 @@ function Navbar() {
         <ul className="nav-links-custom">
           {navLinks.map((link, i) => (
             <li key={i}>
-              <a
-                href={link.href}
+              <NavLink
+                to={link.href}
                 style={
                   hoveredLink === i
                     ? {
@@ -459,7 +470,7 @@ function Navbar() {
                 onMouseLeave={() => setHoveredLink(null)}
               >
                 {link.label}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -529,9 +540,9 @@ function Navbar() {
           <ul className="mobile-nav-links">
             {navLinks.map((link, i) => (
               <li key={i}>
-                <a href={link.href} onClick={() => setMenuOpen(false)}>
+                <NavLink to={link.href} onClick={() => setMenuOpen(false)}>
                   {link.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
