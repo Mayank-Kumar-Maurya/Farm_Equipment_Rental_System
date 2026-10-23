@@ -14,6 +14,7 @@ import EditEquipment from "./Components/Pages/EditEquipment.jsx";
 import MyEquipment from "./Components/Pages/MyEquipment.jsx";
 import AboutPage from "./Components/Pages/AboutPage.jsx";
 import ContactPage from "./Components/Pages/ContactPage.jsx";
+import Booking_Request from "./Components/Pages/Booking_Request.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,11 +47,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/about",
-        element: <AboutPage/>,
+        element: <AboutPage />,
       },
       {
         path: "/contact",
-        element: <ContactPage/>,
+        element: <ContactPage />,
       },
       {
         path: "/search-results",
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "/edit-equipment/:id",
         element: <EditEquipment />,
+      },
+      {
+        path: "/booking-request",
+        element: <Booking_Request />,
       },
     ],
   },
