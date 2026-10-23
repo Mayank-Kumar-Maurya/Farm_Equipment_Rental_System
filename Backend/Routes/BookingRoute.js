@@ -10,7 +10,16 @@ router.route("/listedAppointments")
     .get(isLoggedin, async (req, res) => {
         try {
 
-            let myEquipments = await Product.find({ owner: req.user.userId,  bookings: { $exists: true, $not: { $size: 0 }} }).populate('bookings');
+            let myEquipments = await Product.find({
+              owner: req.user.userId,
+              bookings: { $exists: true, $not: { $size: 0 } },
+            }).populate({
+              path: "bookings",
+              populate: {
+                path: "who_booked",
+                select: "name",
+              },
+            });
             if (!myEquipments) {
                 return res.status(400).json({ msg: "you have not added any equipment yet" });
             }
@@ -42,12 +51,45 @@ router.route("/:bookingId/approve")
         }
     });
 
+    // booking reject
+    router.route("/:bookingId/reject").post(isLoggedin, async (req, res) => {
+      try {
+        let { bookingId } = req.params;
+
+        if (!bookingId) {
+          return res.status(400).json({
+            msg: "booking id not found",
+          });
+        }
+
+        let findBooking = await Booking.findByIdAndUpdate(bookingId, {
+          booking_status: 2,
+        });
+
+        if (!findBooking) {
+          return res.status(400).json({
+            msg: "booking not found",
+          });
+        }
+
+        res.status(200).json({
+          msg: "booking rejected successfully",
+        });
+      } catch (error) {
+        return res.status(500).json({
+          msg: `internal server error ${error}`,
+        });
+      }
+    });
+
 // view mybooking
 router.route("/viewMyBooking")
     .get(isLoggedin, async (req, res) => {
         try {
 
-            let findMyBooking = await Booking.find({ who_booked: req.user.userId });
+            let findMyBooking = await Booking.find({
+              who_booked: req.user.userId,
+            }).populate("equipment", "name");;
             if (!findMyBooking) {
                 return res.status(400).json({ msg: "you have not booked any equipment yet" });
             }
@@ -91,9 +133,10 @@ router.route("/:id/bookings")
             }
 
             let newBooking = await new Booking({
-                date,
-                location,
-                who_booked: req.user.userId,
+              date,
+              location,
+              who_booked: req.user.userId,
+              equipment: findEquipment._id,
             });
 
             findEquipment.booked_dates.push(date);

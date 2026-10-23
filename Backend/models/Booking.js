@@ -21,7 +21,11 @@ const bookingSchema = mongoose.Schema({
     booking_status: {
         type: Number,
         default: -1  // -1 -> not approved, 0-> approved, 1->payment done
-    }
+    },
+    equipment: {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+}
 
 })
 
