@@ -20,7 +20,7 @@ const bookingSchema = mongoose.Schema({
     },
     booking_status: {
         type: Number,
-        default: -1  // -1 -> not approved, 0-> approved, 1->payment done
+        default: -1  // -2 -> rejected -1 -> not approved, 0-> approved, 1->payment done
     }
 
 })

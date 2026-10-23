@@ -41,6 +41,24 @@ router.route("/:bookingId/approve")
             return res.status(500).json({ msg: `internal server error ${error}` })
         }
     });
+router.route("/:bookingId/rejected")
+    .post(isLoggedin, async (req, res) => {
+        try {
+            let { bookingId } = req.params;
+            if(!bookingId)
+            {
+                return res.status(400).json({msg:"booking id not found"});
+            }
+            let findBooking = await Booking.findByIdAndUpdate(bookingId, { booking_status: -2 });
+            if(!findBooking)
+            {
+                return res.status(400).json({msg:"booking not found"});
+            }
+            res.status(200).json({ msg: "booking approved" });
+        } catch (error) {
+            return res.status(500).json({ msg: `internal server error ${error}` })
+        }
+    });
 
 // view mybooking
 router.route("/viewMyBooking")

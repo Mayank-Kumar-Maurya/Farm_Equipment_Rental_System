@@ -12,9 +12,10 @@ router.route("/")
         res.send('yes ai route');
     })
 
-    .post(isLoggedin, async (req, res) => {
+    .post(async (req, res) => {
         try {
             let { message } = req.body;
+            console.log("message", message, "req, body", req.body);
             if (!message) {
                 return res.status(400).json({ msg: 'Please enter something to ask you query' });
             }
