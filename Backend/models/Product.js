@@ -72,7 +72,7 @@ const ProductSchema = mongoose.Schema({
 
 })
 
-ProductSchema.index({ location: '2dsphere' })
+// ProductSchema.index({ location: '2dsphere' })
 
 const Product = mongoose.model('Product', ProductSchema)
 module.exports = Product

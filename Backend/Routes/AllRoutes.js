@@ -50,6 +50,7 @@ router.route("/addEquipments")
             res.status(200).json({ msg: "equipment added successfully" });
 
         } catch (error) {
+            console.log("post err", error);
             return res.status(500).json({ msg: `internal server error ${error}` });
         }
     })

@@ -16,7 +16,7 @@ router.route("/")
                 { name: { $regex: search, $options: "i" } },
                 { brand: { $regex: search, $options: "i" } },
                 { catergory: { $regex: search, $options: "i" } },
-                { 'location.address': { $regex: search, $options: "i" } },
+                { location: { $regex: search, $options: "i" } },
             ]
         };
 
