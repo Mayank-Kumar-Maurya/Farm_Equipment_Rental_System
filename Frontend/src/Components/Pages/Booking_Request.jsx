@@ -406,7 +406,7 @@ const Booking_Request = () => {
                         return (
                           <tr key={booking._id}>
                             <td className="fw-semibold">
-                              {booking.equipmentName || "Equipment"}
+                              {booking.equipment?.name || "Equipment"}
                             </td>
 
                             <td>{formatDate(booking.date)}</td>
