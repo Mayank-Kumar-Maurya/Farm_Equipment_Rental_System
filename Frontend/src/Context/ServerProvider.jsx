@@ -147,6 +147,24 @@ export default function ServerProvider({ children }) {
     return () => clearTimeout(timeoutId);
   }, [token]);
 
+
+  // ChatBot
+  let chatBot = async(msg)=>
+  {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/aibot/",
+        {message: msg},
+      );
+  
+      console.log("ai res: ", response);
+      return response.data.reply;
+    } catch (error) {
+      console.log("error at ai", error);
+      return ""
+    }
+  }
+
   return (
     <ServerContext.Provider
       value={{
@@ -158,6 +176,7 @@ export default function ServerProvider({ children }) {
         login,
         register,
         logout,
+        chatBot,
       }}
     >
       {children}

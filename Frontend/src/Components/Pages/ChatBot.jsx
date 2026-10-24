@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
+import ServerContext from '../../Context/ServerContext'
 
 const clr = {
   primary: '#4a7c59',
@@ -18,6 +19,15 @@ const quickReplies = [
 ]
 
 const autoReplies = {
+  'hi': `Namaste! How can I help you today?
+
+I am your **FERS Assistant**. I can help you:
+* 🚜 **Find equipment** like Tractors, Harvesters, or Tillers.
+* 📅 **Book equipment** for your farm.
+* 📋 **Check your booking status**.
+* 💰 **Understand rental pricing**.
+
+Are you looking to rent something specific, or do you need help with a booking?`,
   'available equipment': 'You can browse all available equipment on the home page. Use the category filters to narrow down your search! 🌾',
   'how to book':         'Booking is simple!\n1. Find equipment\n2. Select a date\n3. Send booking request\n4. Wait for owner approval ✅',
   'my bookings':         'Go to your dashboard to see all your bookings and their current status (Pending / Approved / Rejected).',
@@ -25,15 +35,28 @@ const autoReplies = {
   'contact support':     'You can reach us at:\n📧 support@fers.com\n📞 +91 98765 43210',
 }
 
-const getAutoReply = (msg) => {
-  const lower = msg.toLowerCase()
-  for (let key in autoReplies) {
-    if (lower.includes(key)) return autoReplies[key]
-  }
-  return "I'm not sure about that. Please contact support at support@fers.com or try browsing the site. 🌾"
-}
 
 function ChatBot() {
+  
+  const {chatBot} = useContext(ServerContext);
+
+  const getAutoReply = async(msg) => {
+    const lower = msg.toLowerCase()
+    for (let key in autoReplies) {
+      if (lower.includes(key)) return autoReplies[key]
+    }
+
+    let ans = await chatBot(msg)
+    console.log(ans)
+    if(ans.length > 0)
+    {
+      return ans;
+    }
+    else
+    return "I'm not sure about that. Please contact support at support@fers.com or try browsing the site. 🌾"
+  }
+
+
   const [open, setOpen]       = useState(false)
   const [messages, setMessages] = useState([
     { from: 'bot', text: '👋 Hi! I\'m FERS Assistant.\nHow can I help you today?' }
@@ -54,9 +77,10 @@ function ChatBot() {
     setInput('')
     setTyping(true)
 
-    setTimeout(() => {
+    setTimeout(async() => {
       setTyping(false)
-      setMessages(prev => [...prev, { from: 'bot', text: getAutoReply(msg) }])
+      let reply = await getAutoReply(msg);
+      setMessages(prev => [...prev, { from: 'bot', text: reply }])
     }, 900)
   }
 
