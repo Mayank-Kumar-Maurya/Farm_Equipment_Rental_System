@@ -1,9 +1,9 @@
 require('dotenv').config()
 
-const express = require('express')
+const express = require('express');
 const app = express();
 const port = 8080;
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 const AllRoutes = require('./Routes/AllRoutes');
@@ -15,6 +15,7 @@ const ComplainRoute = require('./Routes/ComplainRoute');
 const ReviewRoute = require('./Routes/ReviewRoute');
 const BookingRoute = require('./Routes/BookingRoute');
 const AIBot = require('./Routes/AIBot');
+const Sit_issuesRoute = require('./Routes/Sit_issuesRoute');
 
 const dburl = process.env.dburl || 'mongodb://127.0.0.1:27017/FERS';
 
@@ -31,7 +32,10 @@ main()
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true
+}));
 
 app.use("/", AllRoutes);
 app.use("/", BookingRoute);
@@ -40,6 +44,7 @@ app.use("/auth", LoginRoute);
 app.use("/user", UserRoute);
 app.use("/about", AboutRoute);
 app.use("/aibot", AIBot);
+app.use("/contact", Sit_issuesRoute);
 app.use("/:id/complains", ComplainRoute);  // id-> equipment_id eg:- localhost:8080/12345/complains 
 app.use("/:id/reviews", ReviewRoute);
 

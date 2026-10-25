@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import ServerContext from "../../Context/ServerContext";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_BACKEND_URL || "http://localhost:8080";
 
 function SearchResults() {
+
+  const {server} = useContext(ServerContext)
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -20,7 +23,7 @@ function SearchResults() {
         setLoading(true);
         setError("");
 
-        const response = await axios.get(`${API_URL}/search`, {
+        const response = await server.get(`/search`, {
           params: { search },
         });
 

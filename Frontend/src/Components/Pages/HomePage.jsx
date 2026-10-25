@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-
+import React, { useContext, useEffect, useState } from "react";
 import Slider from "../Slider";
 import Card from "../Card";
+import ServerContext from "../../Context/ServerContext";
 
 const categories = [
   "Tractor",
@@ -39,6 +38,9 @@ const features = [
 ];
 
 function HomePage() {
+
+  const {server} = useContext(ServerContext);
+
   const [equipments, setEquipments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,8 +52,8 @@ function HomePage() {
       setLoading(true);
       setError("");
 
-      const response = await axios.get(
-        "http://localhost:8080/showAllEquipments",
+      const response = await server.get(
+        "/showAllEquipments",
       );
 
       console.log("Equipment response:", response.data);

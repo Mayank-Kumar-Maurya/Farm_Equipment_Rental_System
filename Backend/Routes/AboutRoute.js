@@ -3,6 +3,7 @@ const About = require("../models/About");
 const router = express.Router();
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
+const { isLoggedin, isAdmin } = require("../middlewares/Authorization.js");
 // const upload = multer({storage})
 const upload = multer({ dest: 'uploads/' })
 
@@ -20,7 +21,7 @@ router.route("/")
         }
     })
 
-    .post(upload.single('image'), async(req, res)=>{
+    .post(isLoggedin, isAdmin, upload.single('image'), async(req, res)=>{
         try {
           
             let {title_top, description_top, title_bottom, description_bottom} = req.body;
@@ -47,7 +48,7 @@ router.route("/")
         }
     })
 
-    .put(upload.single('image'), async(req, res)=>{
+    .put(isLoggedin, isAdmin, upload.single('image'), async(req, res)=>{
         try {
             let getAbout = await About.findOne();
             console.log("preAbout",getAbout);

@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import ServerContext from "../../Context/ServerContext.js";
 
-const API_URL = "http://localhost:8080";
-
 const MyProfile = () => {
-  const { token } = useContext(ServerContext);
+  const { token, server } = useContext(ServerContext);
 
   const [profile, setProfile] = useState({
     name: "",
@@ -28,8 +25,8 @@ const MyProfile = () => {
       setLoading(true);
       setError("");
 
-      const response = await axios.get(
-        `${API_URL}/user/viewMyProfile`,
+      const response = await server.get(
+        `/user/viewMyProfile`,
         {
           headers: {
             token: token,
@@ -116,8 +113,8 @@ const MyProfile = () => {
       setError("");
       setSuccess("");
 
-      const response = await axios.put(
-        `${API_URL}/user/viewMyProfile`,
+      const response = await server.put(
+        `/user/viewMyProfile`,
         {
           name: profile.name.trim(),
           email: profile.email.trim(),

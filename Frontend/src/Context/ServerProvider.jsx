@@ -5,10 +5,10 @@ import axios from "axios";
 export default function ServerProvider({ children }) {
   // Get saved user when application starts
 
-  // let server = axios.create({
-  //   baseURL: "http://localhost:8080",
-  //   withCredentials: true,
-  // });
+  let server = axios.create({
+    baseURL: import.meta.env.VITE_API_BACKEND_URL || "http://localhost:8080",
+    withCredentials: true,
+  });
 
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
@@ -27,8 +27,8 @@ export default function ServerProvider({ children }) {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:8080/auth/login",
+      const response = await server.post(
+        "/auth/login",
         loginData,
       );
 
@@ -67,8 +67,8 @@ export default function ServerProvider({ children }) {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:8080/auth/register",
+      const response = await server.post(
+        "/auth/register",
         registerData,
       );
 
@@ -152,8 +152,8 @@ export default function ServerProvider({ children }) {
   let chatBot = async(msg)=>
   {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/aibot/",
+      const response = await server.post(
+        "/aibot/",
         {message: msg},
       );
   
@@ -168,6 +168,7 @@ export default function ServerProvider({ children }) {
   return (
     <ServerContext.Provider
       value={{
+        server,
         user,
         setUser,
         token,

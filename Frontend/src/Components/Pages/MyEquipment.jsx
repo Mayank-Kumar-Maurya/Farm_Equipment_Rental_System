@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ServerContext from "../../Context/ServerContext.js";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_BACKEND_URL || "http://localhost:8080";
 
 function MyEquipment() {
-  const { token } = useContext(ServerContext);
+  const { token, server } = useContext(ServerContext);
   const navigate = useNavigate();
 
   const [equipments, setEquipments] = useState([]);
@@ -18,7 +17,7 @@ function MyEquipment() {
       setLoading(true);
       setError("");
 
-      const response = await axios.get(`${API_URL}/showMyEquipments`, {
+      const response = await server.get(`/showMyEquipments`, {
         headers: {
           token: token,
         },
@@ -49,7 +48,7 @@ function MyEquipment() {
     if (image.startsWith("http")) {
       return image;
     }
-
+// todo process.env
     return `${API_URL}${image}`;
   };
 

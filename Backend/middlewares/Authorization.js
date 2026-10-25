@@ -120,16 +120,15 @@ const isBookingOwner = async (req, res, next) => {
 }
 
 const isAdmin = (req, res, next) => {
-    console.log("check admin",req.user.userId.equals("6acb6e5bac03f23d06a57909"))
+    console.log("check admin",req.user.userId , process.env.ADMIN_USER_ID)
 
-    if (req.user.userId.equals("6acb6e5bac03f23d06a57909")) {
-        return true;
+    if (req.user.userId != process.env.ADMIN_USER_ID) {
+        return res.status(401).json({ msg: "You are not authorized to make changes" })
     }
-    else {
-        return false;
-    }
+   
+    return next();
 }
 
 
 
-module.exports = { isLoggedin, isOwner, isComplainOwner, isReviewOwner, isBookingOwner }
+module.exports = { isLoggedin, isOwner, isComplainOwner, isReviewOwner, isBookingOwner, isAdmin }

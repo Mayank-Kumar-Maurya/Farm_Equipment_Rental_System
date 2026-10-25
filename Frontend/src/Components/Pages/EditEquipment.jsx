@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
 import { showFlashMessage } from "./FlashMessage";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_BACKEND_URL || "http://localhost:8080";
 
 const clr = {
   primary: "#4a7c59",
@@ -170,9 +169,11 @@ const styles = {
 };
 
 function EditEquipment() {
+
+  const { token, user, server } = useContext(ServerContext);
+
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token, user } = useContext(ServerContext);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -200,7 +201,7 @@ function EditEquipment() {
       try {
         setLoading(true);
 
-        const response = await axios.get(`${API_URL}/showEquipment/${id}`);
+        const response = await server.get(`/showEquipment/${id}`);
 
         const data = response.data.Equipment;
 
@@ -252,7 +253,7 @@ function EditEquipment() {
     if (image.url.startsWith("http://") || image.url.startsWith("https://")) {
       return image.url;
     }
-
+// todo process.env
     return `${API_URL}${
       image.url.startsWith("/") ? image.url : `/${image.url}`
     }`;
@@ -396,7 +397,7 @@ function EditEquipment() {
         data.append("images", photo.file);
       });
 
-      await axios.put(`${API_URL}/showEquipment/${id}`, data, {
+      await server.put(`/showEquipment/${id}`, data, {
         headers: {
           token: token,
         },
