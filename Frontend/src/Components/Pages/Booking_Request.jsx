@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ServerContext from "../../Context/ServerContext.js";
 import { showFlashMessage } from "./FlashMessage.jsx";
 
-const API_URL = "http://localhost:8080";
-const BOOKING_API = API_URL;
 
 const Booking_Request = () => {
-  const { token } = useContext(ServerContext);
+  const { token, server } = useContext(ServerContext);
   const navigate = useNavigate();
 
   const [equipmentList, setEquipmentList] = useState([]);
@@ -26,10 +23,10 @@ const Booking_Request = () => {
       setError("");
 
       const [incomingResponse, myBookingsResponse] = await Promise.all([
-        axios.get(`${BOOKING_API}/listedAppointments`, {
+        server.get(`/listedAppointments`, {
           headers: { token },
         }),
-        axios.get(`${BOOKING_API}/viewMyBooking`, {
+        server.get(`/viewMyBooking`, {
           headers: { token },
         }),
       ]);
@@ -78,8 +75,8 @@ const Booking_Request = () => {
       setApprovingId(bookingId);
       setError("");
 
-      await axios.post(
-        `${BOOKING_API}/${bookingId}/approve`,
+      await server.post(
+        `/${bookingId}/approve`,
         {},
         {
           headers: { token },
@@ -114,8 +111,8 @@ const Booking_Request = () => {
       setApprovingId(bookingId);
       setError("");
 
-      await axios.post(
-        `${BOOKING_API}/${bookingId}/rejected`,
+      await server.post(
+        `/${bookingId}/rejected`,
         {},
         {
           headers: { token },
@@ -433,4 +430,4 @@ const Booking_Request = () => {
   );
 };
 
-  export default Booking_Request;
+export default Booking_Request;

@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useRef, useState} from "react";
-
 import { useNavigate, NavLink } from "react-router-dom";
-import axios from "axios";
 import ServerContext from "../Context/ServerContext.js";
 import { showFlashMessage } from "./Pages/FlashMessage.jsx";
 
-const API_URL = "http://localhost:8080";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -145,6 +142,9 @@ const styles = {
 };
 
 function Navbar() {
+
+  const { user, token, logout, server } = useContext(ServerContext);
+
   const [hoveredLink, setHoveredLink] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -159,7 +159,40 @@ function Navbar() {
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
-  const { user, token, logout } = useContext(ServerContext);
+  // Admin checking
+  const [isAppAdmin, setIsAppAdmin] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const checkAdmin = async () => {
+      setIsAppAdmin(false);
+
+      if (!user || !token) return;
+
+      try {
+        const response = await server.get("/contact/checkIssueAdmin", {
+          headers: { token },
+        });
+
+        if (!cancelled) {
+          setIsAppAdmin(response.data.isAdmin === true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setIsAppAdmin(false);
+        }
+
+        console.error("Admin status check failed:", error);
+      }
+    };
+
+    checkAdmin();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, token, server]);
 
   // Search equipment
   const handleSearch = async (e) => {
@@ -175,7 +208,7 @@ function Navbar() {
     try {
       setSearchLoading(true);
 
-      await axios.get(`${API_URL}/search`, {
+      await server.get(`/search`, {
         params: { search },
       });
 
@@ -205,7 +238,7 @@ function Navbar() {
       setProfileLoading(true);
       setProfileError("");
 
-      const response = await axios.get(`${API_URL}/user/viewMyProfile`, {
+      const response = await server.get(`/user/viewMyProfile`, {
         headers: { token },
       });
 
@@ -412,6 +445,19 @@ function Navbar() {
       >
         Booking_Request
       </button>
+
+      {isAppAdmin && (
+        <button
+          className="btn btn-outline-dark w-100 mb-2"
+          onClick={() => {
+            setProfileOpen(false);
+            setMenuOpen(false);
+            navigate("/all-issues");
+          }}
+        >
+          ✉️ All Issues
+        </button>
+      )}
 
       <button
         className="btn btn-success w-100 mb-2"

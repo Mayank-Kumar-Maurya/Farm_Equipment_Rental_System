@@ -182,6 +182,7 @@ function LoginForm({ onSwitch }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData({
       ...formData,
       [name]: name === "email" ? value.toLowerCase() : value,
@@ -304,6 +305,7 @@ function RegisterForm({ onSwitch }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData({
       ...formData,
       [name]: name === "email" ? value.toLowerCase() : value,
