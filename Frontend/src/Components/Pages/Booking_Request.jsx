@@ -115,7 +115,7 @@ const Booking_Request = () => {
       setError("");
 
       await axios.post(
-        `${BOOKING_API}/${bookingId}/reject`,
+        `${BOOKING_API}/${bookingId}/rejected`,
         {},
         {
           headers: { token },
@@ -176,7 +176,7 @@ const Booking_Request = () => {
           className: "bg-primary",
         };
 
-      case 2:
+      case -2:
         return {
           label: "Not Approved",
           className: "bg-danger",
@@ -433,4 +433,4 @@ const Booking_Request = () => {
   );
 };
 
-export default Booking_Request;
+  export default Booking_Request;
