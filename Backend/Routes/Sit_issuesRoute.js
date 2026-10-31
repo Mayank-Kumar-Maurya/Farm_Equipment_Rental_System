@@ -3,26 +3,6 @@ const router = express.Router()
 const { isLoggedin, isAdmin } = require("../middlewares/Authorization");
 const Sit_issue = require("../models/Sit_issues");
 
-// Check whether the logged-in user is the admin
-router.get("/checkIssueAdmin", isLoggedin, (req, res) => {
-    try {
-        const adminId = process.env.ADMIN_USER_ID;
-        const loggedInUserId = req.user?.userId;
-
-        const isAppAdmin =
-            Boolean(adminId) &&
-            String(loggedInUserId) === String(adminId);
-
-        return res.status(200).json({
-            isAdmin: isAppAdmin
-        });
-    } catch (error) {
-        return res.status(500).json({
-            msg: "Unable to verify admin",
-        });
-    }
-});
-
 router.route("/raiseIssue")
     .post(isLoggedin, async (req, res) => {
         try {
