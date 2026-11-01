@@ -15,6 +15,7 @@ import MyEquipment from "./Components/Pages/MyEquipment.jsx";
 import AboutPage from "./Components/Pages/AboutPage.jsx";
 import ContactPage from "./Components/Pages/ContactPage.jsx";
 import Booking_Request from "./Components/Pages/Booking_Request.jsx";
+import AllIssues from "./Components/Pages/AllIssues.jsx";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
         path: "/booking-request",
         element: <Booking_Request />,
       },
+      {
+        path: "/all-issues",
+        element: <AllIssues/>
+      }
     ],
   },
 ]);

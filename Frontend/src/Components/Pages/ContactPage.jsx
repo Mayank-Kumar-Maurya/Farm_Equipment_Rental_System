@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import ServerContext from "../../Context/ServerContext";
 
 const ContactPage = () => {
+  
+  const{token, server} = useContext(ServerContext);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -43,7 +47,9 @@ const ContactPage = () => {
 
       // TODO: Connect this form to your backend contact API.
       // Example:
-      // await axios.post("http://localhost:8080/contact", formData);
+      await server.post("/contact/raiseIssue",
+         formData, {headers: { token }}
+        );
 
       console.log("Contact form submitted:", formData);
 

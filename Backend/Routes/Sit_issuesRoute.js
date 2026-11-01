@@ -6,13 +6,14 @@ const Sit_issue = require("../models/Sit_issues");
 router.route("/raiseIssue")
     .post(isLoggedin, async (req, res) => {
         try {
-            let { full_name, email, phone_no, subject, message } = req.body;
-            if (!full_name || !email || !phone_no || !subject || !message) {
+            let { name, email, phone, subject, message } = req.body;
+            
+            if (!name || !email || !phone || !subject || !message) {
                 return res.status(400).json({ msg: "All fields are required" });
             }
 
             let newIssue = new Sit_issue({
-                full_name, email, phone_no, subject, message
+                full_name: name, email, phone_no: phone, subject, message
             });
 
             await newIssue.save();
