@@ -3,10 +3,9 @@ import { useNavigate, NavLink } from "react-router-dom";
 import ServerContext from "../Context/ServerContext.js";
 import { showFlashMessage } from "./Pages/FlashMessage.jsx";
 
-
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "Equipment", href: "/#equipment"},
+  { label: "Equipment", href: "/#equipment" },
   { label: "Add Equipments", href: "/addEquipments" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -159,6 +158,13 @@ function Navbar() {
   const navigate = useNavigate();
   const profileRef = useRef(null);
 
+  // Admin checking using frontend environment variable
+  const ADMIN_USER_ID = import.meta.env.VITE_API_ADMIN_USER_ID;
+
+  const isAppAdmin =
+    user?._id === ADMIN_USER_ID ||
+    user?.userId === ADMIN_USER_ID ||
+    user?.id === ADMIN_USER_ID;
 
   // Search equipment
   const handleSearch = async (e) => {
@@ -411,6 +417,19 @@ function Navbar() {
       >
         Booking_Request
       </button>
+
+      {isAppAdmin && (
+        <button
+          className="btn btn-outline-dark w-100 mb-2"
+          onClick={() => {
+            setProfileOpen(false);
+            setMenuOpen(false);
+            navigate("/all-issues");
+          }}
+        >
+          ✉️ All Issues
+        </button>
+      )}
 
       <button
         className="btn btn-success w-100 mb-2"
