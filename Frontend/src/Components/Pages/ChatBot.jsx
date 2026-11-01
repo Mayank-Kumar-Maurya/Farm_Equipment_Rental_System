@@ -19,7 +19,12 @@ const quickReplies = [
 ]
 
 const autoReplies = {
-  'hi': `Namaste! How can I help you today?
+  'available equipment': 'You can browse all available equipment on the home page. Use the category filters to narrow down your search! 🌾',
+  'how to book':         'Booking is simple!\n1. Find equipment\n2. Select a date\n3. Send booking request\n4. Wait for owner approval ✅',
+  'my bookings':         'Go to your dashboard to see all your bookings and their current status (Pending / Approved / Rejected).',
+  'rental prices':       'Rental prices vary by equipment type:\n🚜 Tractor: ₹800–₹2000/day\n🌾 Harvester: ₹1500–₹4000/day\n💧 Sprayer: ₹400–₹800/day',
+  'contact support':     'You can reach us at:\n📧 support@fers.com\n📞 +91 98765 43210',
+  'hi':                   `Namaste! How can I help you today?
 
 I am your **FERS Assistant**. I can help you:
 * 🚜 **Find equipment** like Tractors, Harvesters, or Tillers.
@@ -27,12 +32,7 @@ I am your **FERS Assistant**. I can help you:
 * 📋 **Check your booking status**.
 * 💰 **Understand rental pricing**.
 
-Are you looking to rent something specific, or do you need help with a booking?`,
-  'available equipment': 'You can browse all available equipment on the home page. Use the category filters to narrow down your search! 🌾',
-  'how to book':         'Booking is simple!\n1. Find equipment\n2. Select a date\n3. Send booking request\n4. Wait for owner approval ✅',
-  'my bookings':         'Go to your dashboard to see all your bookings and their current status (Pending / Approved / Rejected).',
-  'rental prices':       'Rental prices vary by equipment type:\n🚜 Tractor: ₹800–₹2000/day\n🌾 Harvester: ₹1500–₹4000/day\n💧 Sprayer: ₹400–₹800/day',
-  'contact support':     'You can reach us at:\n📧 support@fers.com\n📞 +91 98765 43210',
+Are you looking to rent something specific, or do you need help with a booking?`
 }
 
 

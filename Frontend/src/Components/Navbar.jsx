@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState} from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import ServerContext from "../Context/ServerContext.js";
 import { showFlashMessage } from "./Pages/FlashMessage.jsx";
@@ -141,6 +141,7 @@ const styles = {
 };
 
 function Navbar() {
+
   const { user, token, logout, server } = useContext(ServerContext);
 
   const [hoveredLink, setHoveredLink] = useState(null);

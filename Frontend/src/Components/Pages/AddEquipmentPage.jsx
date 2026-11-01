@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
 import { showFlashMessage } from "./FlashMessage";
 
@@ -233,6 +232,9 @@ const s = {
 };
 
 function AddEquipmentPage() {
+
+  const { token, server } = useContext(ServerContext);
+
   const [focused, setFocused] = useState(null);
   const [dragging, setDragging] = useState(false);
 
@@ -252,7 +254,6 @@ function AddEquipmentPage() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
 
-  const { token } = useContext(ServerContext);
   const navigate = useNavigate();
 
   const focus = (key) => () => setFocused(key);
@@ -391,8 +392,8 @@ const handleSubmit = async (e) => {
       data.append("images", photo.file);
     });
 
-    const response = await axios.post(
-      "http://localhost:8080/addEquipments",
+    const response = await server.post(
+      "/addEquipments",
       data,
       {
         headers: {

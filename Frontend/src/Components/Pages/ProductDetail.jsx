@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import ServerContext from "../../Context/ServerContext";
 import { showFlashMessage } from "./FlashMessage";
 
-const API_URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_BACKEND_URL || "http://localhost:8080";
 
 const ProductDetail = () => {
+
+  const { user, token, server } = useContext(ServerContext);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { user, token } = useContext(ServerContext);
 
   const [equipment, setEquipment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -69,8 +70,8 @@ const ProductDetail = () => {
     try {
       setBookingLoading(true);
 
-      await axios.post(
-        `${API_URL}/${id}/bookings`,
+      await server.post(
+        `/${id}/bookings`,
         {
           date: bookingDate,
           location: bookingLocation.trim(),
@@ -111,7 +112,7 @@ const ProductDetail = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get(`${API_URL}/showEquipment/${id}`);
+      const response = await server.get(`/showEquipment/${id}`);
 
       setEquipment(response.data.Equipment);
       setError("");
@@ -146,6 +147,7 @@ const ProductDetail = () => {
 
     const imagePath = image.url.startsWith("/") ? image.url : `/${image.url}`;
 
+    // todo process.env
     return `${API_URL}${imagePath}`;
   };
 
@@ -160,7 +162,7 @@ const ProductDetail = () => {
     try {
       setDeleting(true);
 
-      await axios.delete(`${API_URL}/showEquipment/${id}`, {
+      await server.delete(`/showEquipment/${id}`, {
         headers: {
           token: token,
         },
@@ -198,8 +200,8 @@ const ProductDetail = () => {
     try {
       setReviewLoading(true);
 
-      const response = await axios.post(
-        `${API_URL}/${id}/reviews`,
+      const response = await server.post(
+        `/${id}/reviews`,
         {
           rating: Number(reviewRating),
           comment: reviewComment.trim(),
@@ -218,7 +220,7 @@ const ProductDetail = () => {
       setShowReviewForm(false);
 
       // Refresh equipment details to display the new review
-      const updatedResponse = await axios.get(`${API_URL}/showEquipment/${id}`);
+      const updatedResponse = await server.get(`/showEquipment/${id}`);
 
       setEquipment(updatedResponse.data.Equipment);
     } catch (error) {
@@ -249,8 +251,8 @@ const ProductDetail = () => {
     try {
       setDeletingReviewId(reviewId);
 
-      const response = await axios.delete(
-        `${API_URL}/${id}/reviews/${reviewId}`,
+      const response = await server.delete(
+        `/${id}/reviews/${reviewId}`,
         {
           headers: {
             token: token,
@@ -288,8 +290,8 @@ const ProductDetail = () => {
     try {
       setComplainLoading(true);
 
-      const response = await axios.post(
-        `${API_URL}/${id}/complains`,
+      const response = await server.post(
+        `/${id}/complains`,
         {
           message: complainMessage.trim(),
         },
@@ -335,8 +337,8 @@ const ProductDetail = () => {
     try {
       setDeletingComplainId(complainId);
 
-      const response = await axios.delete(
-        `${API_URL}/${id}/complains/${complainId}`,
+      const response = await server.delete(
+        `/${id}/complains/${complainId}`,
         {
           headers: {
             token: token,
