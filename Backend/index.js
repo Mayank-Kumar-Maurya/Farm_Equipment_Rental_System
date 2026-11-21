@@ -16,7 +16,7 @@ const ReviewRoute = require('./Routes/ReviewRoute');
 const BookingRoute = require('./Routes/BookingRoute');
 const AIBot = require('./Routes/AIBot');
 const Sit_issuesRoute = require('./Routes/Sit_issuesRoute');
-
+const PaymentRoute = require('./Routes/Payment.js') 
 const dburl = process.env.dburl || 'mongodb://127.0.0.1:27017/FERS';
 
 async function main() {
@@ -47,6 +47,7 @@ app.use("/aibot", AIBot);
 app.use("/contact", Sit_issuesRoute);
 app.use("/:id/complains", ComplainRoute);  // id-> equipment_id eg:- localhost:8080/12345/complains 
 app.use("/:id/reviews", ReviewRoute);
+app.use("/payment",PaymentRoute);
 
 
 app.all("{*any}", (req, res) => {
