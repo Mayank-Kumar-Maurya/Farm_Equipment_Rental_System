@@ -1,0 +1,45 @@
+// todo
+// show inside single product // done // checked
+// show my all Equipments // done // checked
+// change the user , add one more feature of all my equipments and connect that to products // not use this concept
+// product update, delete  // done // checked
+// show all bookings of logged in user
+// search  // done // checked
+// product review // done // checked
+// complain portal againts adding equipment id //done // checked
+// user profile views, update  // done // checked
+// chat feature 
+// profile self + owner in profile there will be chat section
+
+// error handling // done // checked
+// middleware for error // done // checked
+// about // done // checked
+
+// farmer
+booking // done // checked
+show my booking // done // checked 
+wishlist
+payment
+Notifications
+
+
+//owner
+all bookings -> with dates //done // checked
+Earnings
+
+AI Assistant -> bot
+
+
+FRONTEND bugs
+// Add equipment
+images are not showing //done //checked
+no checking of is logged in or not  /// done //checked
+
+no page instruction is there when left empty
+email not checked properly after @gmail not checking the .com
+sare axios request main serverprovider me likho
+profile drop ke baad upper nahi jata hai
+jabhi inside equipment ke dekhte hai to neeche kyu chala jata ha
+
+email small letter
+dropup nhi jaraha
