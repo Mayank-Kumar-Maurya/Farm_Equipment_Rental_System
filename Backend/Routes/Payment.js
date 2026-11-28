@@ -44,7 +44,7 @@ router.route("/payment-razorpay")
 
     // Razorpay options
     const options = {
-      amount: Amount, // convert rupees to paise
+      amount: Amount*100, // convert rupees to paise
       currency: "INR",
       receipt: bookingId,
     };
